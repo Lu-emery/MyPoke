@@ -1,0 +1,37 @@
+
+1- Dar um nome para o sistema
+	Meteoro-Log
+
+2- Identificar a equipe
+	Lucas Mendonça Emery Cade (2017100210)
+	Thiago Damasceno Silve (2017100217)
+	
+3- Descrever o propósito do sistema a ser desenvolvido (que problema(s) ele resolve para o usuário?)
+	Meteoro-log é um sistema que tem como alvo estatísticos e estudantes que tem como interesse o acesso de dados meteorológicos de uma forma simples, concisa e eficiente.
+	
+4- Identificar os usuários (ou tipos de usuários) pretendidos (há mais de um tipo de usuário? qual é o perfil de cada tipo de usuário?)
+	O sistema tem como público-alvo pessoas que precisem de acesso a dados meteorológicos regionais atualizados, como pesquisadores e estudantes.
+	
+5- Descrever brevemente as suas principais funcionalidades (o que ele faz para resolver o(s) problema(s) do(s) usuário(s)?)
+	O sistema é um banco de dados de dados meteorológicos regionais. Ele deve ser acessível por uma API que possibilita a chamada de queries. Os argumentos de query devem ser:
+		Data de Pesquisa
+			Data inicial e final
+			Dias, tomando como inicial o dia atual
+		Local para a Busca
+			Latitude e Longitude
+			Cidade
+	e deve conter as seguintes saídas:
+		Previsão do Tempo
+		Dados observados do tempo
+	
+	*talvez ele também permita a query com múltiplos pontos, disponibilizando a saída de todos*
+	
+6- Identifique o tipo de front-end que será projetado (desktop, web, linha de comando, mobile), que tecnologias empregará (incluindo formatos de arquivos ou outros formatos de dados), que frameworks ou bibliotecas empregará
+	*TODO* definir isso direito
+	
+	front-end: web (html5, css, python)
+	
+	tecnologias: postgres, python
+	
+	frameworks: [][][]
+	bibliotecas: [][][]
