@@ -1,5 +1,6 @@
 #####################################################################
 # myPokeAPI.py - API de manutenção do banco de dados myPoké
+# Versão: 0.4
 #
 # Contribuidores: Lucas Emery
 #                 Thiago Damasceno
@@ -46,7 +47,43 @@ def criar_tabela_pokemons():
 
     cursor.close()
     connection.close()
+    
+def deletar_tabela_pessoas():
 
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""DROP TABLE IF EXISTS pessoas;""")
+    cursor.execute ("""DROP TABLE IF EXISTS pokemons;""")
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    
+def deletar_tabela_pokemons():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""DROP TABLE IF EXISTS pokemons;""")
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    
+def reiniciar_tabela(nome_tabela):
+    if (nome_tabela == 'pessoas')
+        deletar_tabela_pessoas()
+        criar_tabela_pessoas()
+        criar_tabela_pokemons()
+    else if (nome_tabela == 'pokemons')
+        deletar_tabela_pokemons()
+        criar_tabela_pokemons()
+    else
+        return 'Tabela com nome ' + str(nome_tabela) + ' não encontrada, favor fornecer o nome de uma tabela existente'
+    
 # inserir_pessoa(informacoes)
 #   Insere uma pessoa nova no banco de dados
 #   Entrada: uma string no formato "nome,documento,data_nascimento"
