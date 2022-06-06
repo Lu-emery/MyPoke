@@ -14,6 +14,39 @@
 import psycopg2
 from databaseconfig import config
 
+def criar_tabela_pessoas():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""CREATE TABLE IF NOT EXISTS pessoas (
+                        nome VARCHAR,
+                        documento BIGINT PRIMARY KEY,
+                        data_nascimento VARCHAR);""")
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    
+def criar_tabela_pokemons():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""CREATE TABLE IF NOT EXISTS pokemons (
+                        nome VARCHAR PRIMARY KEY,
+                        custo_mensal DOUBLE PRECISION,
+                        especie VARCHAR,
+                        tipo_primario VARCHAR,
+                        tipo_secundario VARCHAR,
+                        documento_treinador VARCHAR);""")
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
 # inserir_pessoa(informacoes)
 #   Insere uma pessoa nova no banco de dados
 #   Entrada: uma string no formato "nome,documento,data_nascimento"
