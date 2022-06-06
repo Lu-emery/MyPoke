@@ -131,6 +131,32 @@ def inserir_pokemon(nome, custo_mensal, tipo_primario, tipo_secundario, document
     # Fecha a conexão com o banco de dados
     cursor.close()
     connection.close()
+    
+ def atualizar_pessoa(documento, *nome = NULL, *data_nascimento = NULL):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+
+    cursor.execute ("if " + nome + """ is not NULL then 
+                         if """ + data_nascimento + """is not NULL then
+                               UPDATE pessoas
+                               SET nome = """ + nome + " data_nascimento = " + data_nascimento +
+                               "WHERE documento = " + documento +
+                          """else
+                               UPDATE pessoas
+                               SET nome = """ + nome +
+                               "WHERE documento = " + documento +
+                    "else if " + data_nascimento + """ is not NULL then
+                        UPDATE pessoas
+                        SET data_nascimento = """ + data_nascimento +
+                        "WHERE documento = " + documento
+                    )
+    connection.commit()
+
+    cursor.close()
+    connection.close()
 
 # excluir_pessoa(documento)
 #   Exclui a pessoa com a chave primaria 'documento'
