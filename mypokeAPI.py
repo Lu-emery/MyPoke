@@ -85,7 +85,7 @@ def criar_tabela_pokemons():
                         especie VARCHAR,
                         tipo_primario VARCHAR,
                         tipo_secundario VARCHAR,
-                        documento_treinador VARCHAR);""")
+                        documento_treinador BIGINT REFERENCES pessoas (documento));""")
     # Finaliza e comita a criação de tabela
     connection.commit()
 
@@ -107,8 +107,7 @@ def deletar_tabela_pessoas():
     cursor = connection.cursor()
 
     # Executa o comando DROP TABLE para ambas as tabelas, caso existam
-    cursor.execute ("""DROP TABLE IF EXISTS pessoas;""")
-    cursor.execute ("""DROP TABLE IF EXISTS pokemons;""")
+    cursor.execute ("""DROP TABLE IF EXISTS pessoas CASCADE;""")
     # Finaliza e comita a deleção das tabelas
     connection.commit()
 
@@ -148,6 +147,7 @@ def reiniciar_tabela(nome_tabela):
         # Caso o argumento seja 'pessoas,' deleta ambas as tabelas
         #   pelo comando deletar_tabela_pessoas() e então
         #   cria ambas as tabelas vazias novamente
+        deletar_tabela_pokemons()
         deletar_tabela_pessoas()
         criar_tabela_pessoas()
         criar_tabela_pokemons()
@@ -162,11 +162,11 @@ def reiniciar_tabela(nome_tabela):
         # Caso o usuário insira um argumento inválido, uma mensagem de erro é exibida
         return 'Tabela com nome ' + str(nome_tabela) + ' não encontrada, favor fornecer o nome de uma tabela existente'
     
-# inserir_pessoa(informacoes)
+# incluir_pessoa(informacoes)
 #   Insere uma pessoa nova no banco de dados
 #   Entrada: uma string no formato "nome,documento,data_nascimento"
 #   Saída: nenhuma
-def inserir_pessoa(nome, documento, data_nascimento):
+def incluir_pessoa(entrada):
 
     # Acessa o banco de dados
     params = config()
@@ -174,6 +174,7 @@ def inserir_pessoa(nome, documento, data_nascimento):
     cursor = connection.cursor()
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
+    nome, documento, data_nascimento = (entrada.replace(';', '')).split(',')
     valores = "'" + nome + "'" + ", " + "'" + str (documento) + "'" + ", " + "'" + data_nascimento + "'"
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
@@ -186,11 +187,11 @@ def inserir_pessoa(nome, documento, data_nascimento):
     cursor.close()
     connection.close()
 
-# inserir_pokemon(informacoes)
+# incluir_pokemon(informacoes)
 #   Insere um pokemon novo no banco de dados
 #   Entrada: uma string no formato "nome,custo_mensal,especie,tipo_primario,tipo_secundario,documento_dono"
 #   Saída: nenhuma
-def inserir_pokemon(nome, custo_mensal, tipo_primario, tipo_secundario, documento_dono, especie):
+def incluir_pokemon(entrada):
     
     # Acessa o banco de dados
     params = config()
@@ -198,10 +199,11 @@ def inserir_pokemon(nome, custo_mensal, tipo_primario, tipo_secundario, document
     cursor = connection.cursor()
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
+    nome, custo_mensal, tipo_primario, tipo_secundario, documento_dono, especie = (entrada.replace(';', '')).split(',')
     valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'" + ", " + "'" + str (documento_dono) + "'" + ", " + "'" + especie + "'"
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
-    cursor.execute ("""INSERT INTO pokemons (nome, custo_mensal, tipo_primario, tipo_secundario, documento_dono, especie) 
+    cursor.execute ("""INSERT INTO pokemons (nome, custo_mensal, especie, tipo_primario, tipo_secundario, documento_treinador) 
                     VALUES ("""+ valores + ");")
     # Completa e commita o processo de inserção
     connection.commit()
@@ -210,7 +212,7 @@ def inserir_pokemon(nome, custo_mensal, tipo_primario, tipo_secundario, document
     cursor.close()
     connection.close()
     
-def atualizar_pessoa(*documento, nome = None, data_nascimento = None):
+def atualizar_pessoa(documento, nome, data_nascimento):
 
     # Acessa o banco de dados
     params = config()
@@ -220,20 +222,9 @@ def atualizar_pessoa(*documento, nome = None, data_nascimento = None):
     # Determina se o usuário quer fazer a alteração do nome, data de nascimento ou ambos
     #   então, executa o comando UPDATE pessoas SET [] para alterar as colunas em questão
     #   na linha onde 'documento' é igual ao argumento passado
-    cursor.execute ("if " + nome + """ is not NULL then 
-                        if """ + data_nascimento + """is not NULL then
-                                UPDATE pessoas
-                                SET nome = """ + nome + " data_nascimento = " + data_nascimento +
-                                "WHERE documento = " + documento +
-                            """else
-                                UPDATE pessoas
-                                SET nome = """ + nome +
-                                "WHERE documento = " + documento +
-                    "else if " + data_nascimento + """ is not NULL then
-                        UPDATE pessoas
-                        SET data_nascimento = """ + data_nascimento +
-                        "WHERE documento = " + documento
-                    )
+    cursor.execute (""" UPDATE pessoas
+                        SET nome = """ + "'" + nome + "'" + ", data_nascimento = " + "'" + data_nascimento + "'" +
+                        " WHERE documento = " + "'" + str(documento) + "'" + ";")
     # Completa e commita o processo de alteração da tabela
     connection.commit()
 
@@ -290,10 +281,12 @@ def excluir_pokemon(nome_pokemon):
 # TODO: REMOVER
 
 def main():
-    #inserir_pokemon("Charla", 150.00, 'Fogo', 'Voador', 555551234, 'Charizard')
-    #inserir_pessoa ("Rafa", 555551278, '21/03/1999')
+    #incluir_pessoa ('Rafa,555551278,21/03/1999;')
+    #incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
+    atualizar_pessoa(555551278,'Rafa','24/03/1999')
+    #reiniciar_tabela('pessoas')
     return
 
 if __name__ == "__main__":
