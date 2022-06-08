@@ -200,6 +200,8 @@ def incluir_pokemon(entrada):
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
     nome, custo_mensal, tipo_primario, tipo_secundario, documento_dono, especie = (entrada.replace(';', '')).split(',')
+    if tipo_secundario == '':
+        tipo_secundario = 'NULL'
     valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'" + ", " + "'" + str (documento_dono) + "'" + ", " + "'" + especie + "'"
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
@@ -343,6 +345,7 @@ def main():
     #incluir_pessoa ('Rafa,555551278,21/03/1999;')
     #incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
     #incluir_pokemon('Aurora,65.50,Butterfree,Inseto,Voador,555551278;')
+    #incluir_pokemon('Ghastly,100.50,Ghastly,Fantasma,,555551278;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
     #atualizar_pessoa(555551278,'Rafa','24/03/1999')
