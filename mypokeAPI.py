@@ -247,6 +247,50 @@ def selecionar_pessoa(documento):
     connection.close()
     return resultado_querry.pop()
 
+def selecionar_pokemon(nome):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT * FROM pokemons
+                       WHERE nome = """ + nome + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry.pop()
+
+
+def retorna_tabela_pessoas():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM pessoas")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_tabela_pokemons():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM pokemons")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
 # excluir_pessoa(documento)
 #   Exclui a pessoa com a chave primaria 'documento'
 #   Entrada: uma string que contém o número de documento da pessoa a ser excluida
@@ -298,10 +342,12 @@ def excluir_pokemon(nome_pokemon):
 def main():
     #incluir_pessoa ('Rafa,555551278,21/03/1999;')
     #incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
+    #incluir_pokemon('Aurora,65.50,Butterfree,Inseto,Voador,555551278;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
     #atualizar_pessoa(555551278,'Rafa','24/03/1999')
     #reiniciar_tabela('pessoas')
+    print (retorna_tabela_pokemons())
     print (selecionar_pessoa(555551278))
     return
 
