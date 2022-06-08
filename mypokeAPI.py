@@ -232,6 +232,21 @@ def atualizar_pessoa(documento, nome, data_nascimento):
     cursor.close()
     connection.close()
 
+def selecionar_pessoa(documento):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT * FROM pessoas
+                       WHERE documento = """ + str (documento) + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry.pop()
+
 # excluir_pessoa(documento)
 #   Exclui a pessoa com a chave primaria 'documento'
 #   Entrada: uma string que contém o número de documento da pessoa a ser excluida
@@ -285,8 +300,9 @@ def main():
     #incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
-    atualizar_pessoa(555551278,'Rafa','24/03/1999')
+    #atualizar_pessoa(555551278,'Rafa','24/03/1999')
     #reiniciar_tabela('pessoas')
+    print (selecionar_pessoa(555551278))
     return
 
 if __name__ == "__main__":
