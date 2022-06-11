@@ -1,6 +1,6 @@
 #####################################################################
 # myPokeAPI.py - API de manutenção do banco de dados myPoké
-# Versão: 0.4.1
+# Versão: 0.7
 #
 # Contribuidores: Lucas Emery
 #                 Thiago Damasceno
@@ -37,8 +37,42 @@
 
 
 # psycopg2: ferramenta utilizada para fazer a ponte entre posgresql e python
+from pydoc import doc
 import psycopg2
 from databaseconfig import config
+
+def criar_base_de_dados():
+    connection = psycopg2.connect(database ="postgres", user='postgres', password='senha', host='localhost', port= '5432')
+    connection.autocommit = True
+    cursor = connection.cursor()
+
+    cursor.execute ('CREATE DATABASE mypoke;')
+    print('Base de dados mypoke criada com sucesso!')
+    # Completa e commita o processo de remoção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+
+def deletar_base_de_dados():
+    connection = psycopg2.connect(database ="postgres", user='postgres', password='senha', host='localhost', port= '5432')
+    connection.autocommit = True
+    cursor = connection.cursor()
+
+    cursor.execute ('DROP DATABASE mypoke;')
+    print('Base de dados mypoke excluída com sucesso!')
+    # Completa e commita o processo de remoção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+
+def reiniciar_base_de_dados():
+    deletar_base_de_dados()
+    criar_base_de_dados()
+
 
 # criar_tabela_pessoas()
 #   Cria uma tabela vazia de pessoas
@@ -293,6 +327,51 @@ def retorna_tabela_pokemons():
     connection.close()
     return resultado_querry
 
+def retorna_pokemons_de_pessoa(documento_treinador):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT * FROM pokemons
+                       WHERE documento_treinador = """ + str(documento_treinador) + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_pokemons_do_tipo(tipo):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT * FROM pokemons
+                       WHERE tipo_primario = """ + "'" + tipo + "'" + " OR tipo_secundario = " + "'" + tipo + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_pokemons_da_especie(especie):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT * FROM pokemons
+                       WHERE especie = """ + "'" + especie + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
 # excluir_pessoa(documento)
 #   Exclui a pessoa com a chave primaria 'documento'
 #   Entrada: uma string que contém o número de documento da pessoa a ser excluida
@@ -305,6 +384,7 @@ def excluir_pessoa(documento):
     cursor = connection.cursor()
 
     # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'documento' igual ao argumento
+    cursor.execute ("DELETE FROM pokemons WHERE documento_treinador = " + "'" + str (documento) + "'" + ";")
     cursor.execute ("DELETE FROM pessoas WHERE documento = " + "'" + str (documento) + "'" + ";")
     # Completa e commita o processo de remoção
     connection.commit()
@@ -342,16 +422,31 @@ def excluir_pokemon(nome_pokemon):
 # TODO: REMOVER
 
 def main():
-    #incluir_pessoa ('Rafa,555551278,21/03/1999;')
-    #incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
-    #incluir_pokemon('Aurora,65.50,Butterfree,Inseto,Voador,555551278;')
-    #incluir_pokemon('Ghastly,100.50,Ghastly,Fantasma,,555551278;')
+    #deletar_base_de_dados()
+    criar_base_de_dados()
+    criar_tabela_pessoas()
+    criar_tabela_pokemons()
+    incluir_pessoa ('Rafa,555551278,21/03/1999;')
+    incluir_pessoa ('Lucas,665551278,16/06/1998;')
+    incluir_pokemon('Mayu,150.00,Charizard,Fogo,Voador,665551278;')
+    incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
+    incluir_pokemon('Aurora,65.50,Butterfree,Inseto,Voador,555551278;')
+    incluir_pokemon('Ghastly,100.50,Ghastly,Fantasma,,555551278;')
+    incluir_pokemon('Rafa Zapdos,600,Zapdos,Voador,Elétrico,555551278;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
-    #atualizar_pessoa(555551278,'Rafa','24/03/1999')
+    atualizar_pessoa(555551278,'Rafa','24/03/1999')
     #reiniciar_tabela('pessoas')
+    #print (retorna_tabela_pokemons())
+    #print (selecionar_pessoa(555551278))
+    #print (retorna_pokemons_de_pessoa(555551278))
+    pokemons_voadores = retorna_pokemons_do_tipo('Voador')
+    pokemons_voadores.sort(key=lambda x:x[1])
+    print (pokemons_voadores)
+    excluir_pessoa (555551278)
     print (retorna_tabela_pokemons())
-    print (selecionar_pessoa(555551278))
+    print (retorna_tabela_pessoas())
+    deletar_base_de_dados()
     return
 
 if __name__ == "__main__":
