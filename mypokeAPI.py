@@ -1,6 +1,6 @@
 #####################################################################
 # myPokeAPI.py - API de manutenção do banco de dados myPoké
-# Versão: 0.7
+# Versão: 0.7.1
 #
 # Contribuidores: Lucas Emery
 #                 Thiago Damasceno
@@ -86,10 +86,10 @@ def criar_tabela_pessoas():
     cursor = connection.cursor()
 
     # Executa o comando CREATE do postgresql, caso a tabela pessoas ainda não exista
-    #   define os parâmetros de pessoa como 'nome, documento, data_nascimento'
+    #   define os parâmetros de pessoa como 'nome, id_treinador, data_nascimento'
     cursor.execute ("""CREATE TABLE IF NOT EXISTS pessoas (
-                        nome VARCHAR,
-                        documento BIGINT PRIMARY KEY,
+                        nome_treinador VARCHAR,
+                        id_treinador BIGINT PRIMARY KEY,
                         data_nascimento VARCHAR);""")
     # Finaliza e comita a criação de tabela
     connection.commit()
@@ -112,14 +112,14 @@ def criar_tabela_pokemons():
     # Executa o comando CREATE do postgresql, caso a tabela pokemons ainda não exista
     #   define os parâmetros de pokemon como 'nome, custo_mensal, especie,
     #                                         tipo_primario, tipo_secundario,
-    #                                         documento_treinador'
+    #                                         id_treinador'
     cursor.execute ("""CREATE TABLE IF NOT EXISTS pokemons (
-                        nome VARCHAR PRIMARY KEY,
+                        nome_pokemon VARCHAR PRIMARY KEY,
                         custo_mensal DOUBLE PRECISION,
                         especie VARCHAR,
                         tipo_primario VARCHAR,
                         tipo_secundario VARCHAR,
-                        documento_treinador BIGINT REFERENCES pessoas (documento));""")
+                        id_treinador BIGINT REFERENCES pessoas (id_treinador));""")
     # Finaliza e comita a criação de tabela
     connection.commit()
 
@@ -198,7 +198,7 @@ def reiniciar_tabela(nome_tabela):
     
 # incluir_pessoa(informacoes)
 #   Insere uma pessoa nova no banco de dados
-#   Entrada: uma string no formato "nome,documento,data_nascimento"
+#   Entrada: uma string no formato "nome,id_treinador,data_nascimento"
 #   Saída: nenhuma
 def incluir_pessoa(entrada):
 
@@ -208,11 +208,11 @@ def incluir_pessoa(entrada):
     cursor = connection.cursor()
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
-    nome, documento, data_nascimento = (entrada.replace(';', '')).split(',')
-    valores = "'" + nome + "'" + ", " + "'" + str (documento) + "'" + ", " + "'" + data_nascimento + "'"
+    nome, id_treinador, data_nascimento = (entrada.replace(';', '')).split(',')
+    valores = "'" + nome + "'" + ", " + "'" + str (id_treinador) + "'" + ", " + "'" + data_nascimento + "'"
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
-    cursor.execute ("""INSERT INTO pessoas (nome, documento, data_nascimento)
+    cursor.execute ("""INSERT INTO pessoas (nome_treinador, id_treinador, data_nascimento)
                      VALUES ("""+ valores + ");")
     # Completa e commita o processo de inserção
     connection.commit()
@@ -223,7 +223,7 @@ def incluir_pessoa(entrada):
 
 # incluir_pokemon(informacoes)
 #   Insere um pokemon novo no banco de dados
-#   Entrada: uma string no formato "nome,custo_mensal,especie,tipo_primario,tipo_secundario,documento_dono"
+#   Entrada: uma string no formato "nome,custo_mensal,especie,tipo_primario,tipo_secundario,id_treinador_dono"
 #   Saída: nenhuma
 def incluir_pokemon(entrada):
     
@@ -233,13 +233,13 @@ def incluir_pokemon(entrada):
     cursor = connection.cursor()
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
-    nome, custo_mensal, tipo_primario, tipo_secundario, documento_dono, especie = (entrada.replace(';', '')).split(',')
+    nome, custo_mensal, tipo_primario, tipo_secundario, id_treinador_dono, especie = (entrada.replace(';', '')).split(',')
     if tipo_secundario == '':
         tipo_secundario = 'NULL'
-    valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'" + ", " + "'" + str (documento_dono) + "'" + ", " + "'" + especie + "'"
+    valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'" + ", " + "'" + str (id_treinador_dono) + "'" + ", " + "'" + especie + "'"
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
-    cursor.execute ("""INSERT INTO pokemons (nome, custo_mensal, especie, tipo_primario, tipo_secundario, documento_treinador) 
+    cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, tipo_primario, tipo_secundario, id_treinador) 
                     VALUES ("""+ valores + ");")
     # Completa e commita o processo de inserção
     connection.commit()
@@ -248,7 +248,7 @@ def incluir_pokemon(entrada):
     cursor.close()
     connection.close()
     
-def atualizar_pessoa(documento, nome, data_nascimento):
+def atualizar_pessoa(id_treinador, nome, data_nascimento):
 
     # Acessa o banco de dados
     params = config()
@@ -257,10 +257,10 @@ def atualizar_pessoa(documento, nome, data_nascimento):
 
     # Determina se o usuário quer fazer a alteração do nome, data de nascimento ou ambos
     #   então, executa o comando UPDATE pessoas SET [] para alterar as colunas em questão
-    #   na linha onde 'documento' é igual ao argumento passado
+    #   na linha onde 'id_treinador' é igual ao argumento passado
     cursor.execute (""" UPDATE pessoas
-                        SET nome = """ + "'" + nome + "'" + ", data_nascimento = " + "'" + data_nascimento + "'" +
-                        " WHERE documento = " + "'" + str(documento) + "'" + ";")
+                        SET nome_treinador = """ + "'" + nome + "'" + ", data_nascimento = " + "'" + data_nascimento + "'" +
+                        " WHERE id_treinador = " + "'" + str(id_treinador) + "'" + ";")
     # Completa e commita o processo de alteração da tabela
     connection.commit()
 
@@ -268,14 +268,32 @@ def atualizar_pessoa(documento, nome, data_nascimento):
     cursor.close()
     connection.close()
 
-def selecionar_pessoa(documento):
+def atualizar_pokemon(nome_pokemon, custo_mensal, especie, tipo_primario, tipo_secundario, id_treinador):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute (""" UPDATE pokemons
+                        SET custo_mensal = """ + "'" + str (custo_mensal) + "'" + 
+                        ", especie = " + "'" + especie + "'" +
+                        ", tipo_primario = " + "'" + tipo_primario + "'" +
+                        ", tipo_secundario = " + "'" + tipo_secundario + "'" +
+                        ", id_treinador = " + "'" + str(id_treinador) + "'" +
+                        " WHERE nome_pokemon = " + "'" + nome_pokemon + "'" + ";")
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+def selecionar_pessoa(id_treinador):
 
     params = config()
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
 
     cursor.execute ("""SELECT * FROM pessoas
-                       WHERE documento = """ + str (documento) + ";")
+                       WHERE id_treinador = """ + str (id_treinador) + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
@@ -327,14 +345,14 @@ def retorna_tabela_pokemons():
     connection.close()
     return resultado_querry
 
-def retorna_pokemons_de_pessoa(documento_treinador):
+def retorna_pokemons_de_pessoa_id_treinador(id_treinador):
 
     params = config()
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
 
     cursor.execute ("""SELECT * FROM pokemons
-                       WHERE documento_treinador = """ + str(documento_treinador) + ";")
+                       WHERE id_treinador = """ + str(id_treinador) + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
@@ -372,20 +390,20 @@ def retorna_pokemons_da_especie(especie):
     connection.close()
     return resultado_querry
 
-# excluir_pessoa(documento)
-#   Exclui a pessoa com a chave primaria 'documento'
-#   Entrada: uma string que contém o número de documento da pessoa a ser excluida
+# excluir_pessoa(id_treinador)
+#   Exclui a pessoa com a chave primaria 'id_treinador'
+#   Entrada: uma string que contém o número de id_treinador da pessoa a ser excluida
 #   Saída: nenhuma
-def excluir_pessoa(documento):
+def excluir_pessoa(id_treinador):
     
     # Acessa o banco de dados
     params = config()
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
 
-    # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'documento' igual ao argumento
-    cursor.execute ("DELETE FROM pokemons WHERE documento_treinador = " + "'" + str (documento) + "'" + ";")
-    cursor.execute ("DELETE FROM pessoas WHERE documento = " + "'" + str (documento) + "'" + ";")
+    # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'id_treinador' igual ao argumento
+    cursor.execute ("DELETE FROM pokemons WHERE id_treinador = " + "'" + str (id_treinador) + "'" + ";")
+    cursor.execute ("DELETE FROM pessoas WHERE id_treinador = " + "'" + str (id_treinador) + "'" + ";")
     # Completa e commita o processo de remoção
     connection.commit()
 
@@ -413,8 +431,57 @@ def excluir_pokemon(nome_pokemon):
     cursor.close()
     connection.close()
 
+# QUERRIES AVANÇADAS
 
+def retorna_propietarios_de_especie(especie):
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
 
+    cursor.execute ("""SELECT nome_treinador, id_treinador FROM pessoas NATURAL JOIN pokemons
+                       WHERE especie = """ + "'" + especie + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_pokemons_de_pessoa_nome_treinador(nome_treinador):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT nome_pokemon, custo_mensal, especie, tipo_primario, tipo_secundario FROM pokemons NATURAL JOIN pessoas
+                       WHERE nome_treinador = """ + "'" + nome_treinador + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_treinadores_com_custo_maior(custo_mensal):
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""WITH custo_por_treinador AS (
+	                SELECT SUM (custo_mensal) AS custo_total, id_treinador 
+                    FROM pokemons
+                    GROUP BY id_treinador)
+                    SELECT nome_treinador, id_treinador, data_nascimento 
+                    FROM pessoas NATURAL JOIN custo_por_treinador
+                    WHERE pessoas.id_treinador = custo_por_treinador.id_treinador 
+                    AND custo_total > """ + str(custo_mensal) + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
 
 
 #################################################################################
@@ -428,7 +495,10 @@ def main():
     criar_tabela_pokemons()
     incluir_pessoa ('Rafa,555551278,21/03/1999;')
     incluir_pessoa ('Lucas,665551278,16/06/1998;')
+    incluir_pessoa ('Carlinhos,555555555,23/05/1994;')
     incluir_pokemon('Mayu,150.00,Charizard,Fogo,Voador,665551278;')
+    incluir_pokemon('Viny,200.00,Dragonite,Dragao,,665551278;')
+    incluir_pokemon('Sparky,80.00,Jolteon,Eletrico,,555555555;')
     incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
     incluir_pokemon('Aurora,65.50,Butterfree,Inseto,Voador,555551278;')
     incluir_pokemon('Ghastly,100.50,Ghastly,Fantasma,,555551278;')
@@ -439,13 +509,16 @@ def main():
     #reiniciar_tabela('pessoas')
     #print (retorna_tabela_pokemons())
     #print (selecionar_pessoa(555551278))
-    #print (retorna_pokemons_de_pessoa(555551278))
+    #print (retorna_pokemons_de_pessoa_id_treinador(555551278))
     pokemons_voadores = retorna_pokemons_do_tipo('Voador')
     pokemons_voadores.sort(key=lambda x:x[1])
-    print (pokemons_voadores)
-    excluir_pessoa (555551278)
-    print (retorna_tabela_pokemons())
-    print (retorna_tabela_pessoas())
+    #print (pokemons_voadores)
+    #excluir_pessoa (555551278)
+    #print (retorna_tabela_pokemons())
+    #print (retorna_tabela_pessoas())
+    #print (retorna_propietarios_de_especie('Charizard'))
+    #print (retorna_pokemons_de_pessoa_nome_treinador('Rafa'))
+    print (retorna_treinadores_com_custo_maior(900))
     deletar_base_de_dados()
     return
 
