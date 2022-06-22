@@ -1,6 +1,6 @@
 #####################################################################
 # myPokeAPI.py - API de manutenção do banco de dados myPoké
-# Versão: 0.7.1
+# Versão: 0.8
 #
 # Contribuidores: Lucas Emery
 #                 Thiago Damasceno
@@ -18,6 +18,9 @@
 #   0.3: Implementação das funções de deleção e reinicialização de tabelas
 #   0.4: Implementação da função de atualização de pessoa
 #   0.4.1: Documentação das funções adicionadas, changelog e lista todo
+#   0.7.0: Implementação das funções de consulta
+#   0.7.1: Implementação de Querries avançadas
+#   0.8.0 Implementação da tabela "Espécies"
 #
 #####################################################################
 #
@@ -114,16 +117,30 @@ def criar_tabela_pokemons():
     #                                         tipo_primario, tipo_secundario,
     #                                         id_treinador'
     cursor.execute ("""CREATE TABLE IF NOT EXISTS pokemons (
-                        nome_pokemon VARCHAR PRIMARY KEY,
+                        id_pokemon SERIAL PRIMARY KEY,
+                        nome_pokemon VARCHAR,
                         custo_mensal DOUBLE PRECISION,
                         especie VARCHAR,
-                        tipo_primario VARCHAR,
-                        tipo_secundario VARCHAR,
                         id_treinador BIGINT REFERENCES pessoas (id_treinador));""")
     # Finaliza e comita a criação de tabela
     connection.commit()
 
     # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+
+def criar_tabela_especies():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("""CREATE TABLE IF NOT EXISTS especies (
+                        especie VARCHAR PRIMARY KEY,
+                        tipo_primario VARCHAR,
+                        tipo_secundario VARCHAR);""")
+    connection.commit()
+
     cursor.close()
     connection.close()
     
@@ -196,6 +213,29 @@ def reiniciar_tabela(nome_tabela):
         # Caso o usuário insira um argumento inválido, uma mensagem de erro é exibida
         return 'Tabela com nome ' + str(nome_tabela) + ' não encontrada, favor fornecer o nome de uma tabela existente'
     
+
+def incluir_especie(entrada):
+    
+    # Acessa o banco de dados
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
+    especie, tipo_primario, tipo_secundario = (entrada.replace(';', '')).split(',')
+    if (tipo_secundario == ''):
+        tipo_secundario = 'NULL'
+    valores = "'" + especie + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'"
+
+    cursor.execute ("""INSERT INTO especies (especie, tipo_primario, tipo_secundario) 
+                    VALUES ("""+ valores + ");")
+    # Completa e commita o processo de inserção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+    
 # incluir_pessoa(informacoes)
 #   Insere uma pessoa nova no banco de dados
 #   Entrada: uma string no formato "nome,id_treinador,data_nascimento"
@@ -233,13 +273,11 @@ def incluir_pokemon(entrada):
     cursor = connection.cursor()
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
-    nome, custo_mensal, tipo_primario, tipo_secundario, id_treinador_dono, especie = (entrada.replace(';', '')).split(',')
-    if tipo_secundario == '':
-        tipo_secundario = 'NULL'
-    valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'" + ", " + "'" + str (id_treinador_dono) + "'" + ", " + "'" + especie + "'"
+    nome, custo_mensal, especie, id_treinador = (entrada.replace(';', '')).split(',')
+    valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + especie + "'" + ", " + "'" + str (id_treinador) + "'"
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
-    cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, tipo_primario, tipo_secundario, id_treinador) 
+    cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, id_treinador) 
                     VALUES ("""+ valores + ");")
     # Completa e commita o processo de inserção
     connection.commit()
@@ -268,7 +306,7 @@ def atualizar_pessoa(id_treinador, nome, data_nascimento):
     cursor.close()
     connection.close()
 
-def atualizar_pokemon(nome_pokemon, custo_mensal, especie, tipo_primario, tipo_secundario, id_treinador):
+def atualizar_pokemon(nome_pokemon, custo_mensal, especie, id_treinador):
 
     params = config()
     connection = psycopg2.connect(**params)
@@ -277,8 +315,6 @@ def atualizar_pokemon(nome_pokemon, custo_mensal, especie, tipo_primario, tipo_s
     cursor.execute (""" UPDATE pokemons
                         SET custo_mensal = """ + "'" + str (custo_mensal) + "'" + 
                         ", especie = " + "'" + especie + "'" +
-                        ", tipo_primario = " + "'" + tipo_primario + "'" +
-                        ", tipo_secundario = " + "'" + tipo_secundario + "'" +
                         ", id_treinador = " + "'" + str(id_treinador) + "'" +
                         " WHERE nome_pokemon = " + "'" + nome_pokemon + "'" + ";")
     connection.commit()
@@ -345,6 +381,20 @@ def retorna_tabela_pokemons():
     connection.close()
     return resultado_querry
 
+def retorna_tabela_especies():
+
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM especies")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
 def retorna_pokemons_de_pessoa_id_treinador(id_treinador):
 
     params = config()
@@ -366,7 +416,7 @@ def retorna_pokemons_do_tipo(tipo):
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT * FROM pokemons
+    cursor.execute ("""SELECT * FROM pokemons NATURAL JOIN especies
                        WHERE tipo_primario = """ + "'" + tipo + "'" + " OR tipo_secundario = " + "'" + tipo + "'" + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
@@ -425,6 +475,21 @@ def excluir_pokemon(nome_pokemon):
     # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'nome_pokemon' igual ao argumento
     cursor.execute ("DELETE FROM pokemons WHERE nome = " + "'" + nome_pokemon + "'" + ";")
     # Completa e commita o processo de remoção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+
+def excluir_especie(especie):
+
+    # Acessa o banco de dados
+    params = config()
+    connection = psycopg2.connect(**params)
+    cursor = connection.cursor()
+
+    cursor.execute ("DELETE FROM especies WHERE especie = " + "'" + especie + "'" + ";")
+    # Completa e commita o processo de inserção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
@@ -493,16 +558,23 @@ def main():
     criar_base_de_dados()
     criar_tabela_pessoas()
     criar_tabela_pokemons()
+    criar_tabela_especies()
+    incluir_especie('Charizard,Fogo,Voador')
+    incluir_especie('Dragonite,Dragao,')
+    incluir_especie('Jolteon,Eletrico,')
+    incluir_especie('Butterfree,Inseto,Voador')
+    incluir_especie('Ghastly,Fantasma,')
+    incluir_especie('Zapdos,Voador,Elétrico')
     incluir_pessoa ('Rafa,555551278,21/03/1999;')
     incluir_pessoa ('Lucas,665551278,16/06/1998;')
     incluir_pessoa ('Carlinhos,555555555,23/05/1994;')
-    incluir_pokemon('Mayu,150.00,Charizard,Fogo,Voador,665551278;')
-    incluir_pokemon('Viny,200.00,Dragonite,Dragao,,665551278;')
-    incluir_pokemon('Sparky,80.00,Jolteon,Eletrico,,555555555;')
-    incluir_pokemon('Charla,150.00,Charizard,Fogo,Voador,555551278;')
-    incluir_pokemon('Aurora,65.50,Butterfree,Inseto,Voador,555551278;')
-    incluir_pokemon('Ghastly,100.50,Ghastly,Fantasma,,555551278;')
-    incluir_pokemon('Rafa Zapdos,600,Zapdos,Voador,Elétrico,555551278;')
+    incluir_pokemon('Mayu,150.00,Charizard,665551278;')
+    incluir_pokemon('Viny,200.00,Dragonite,665551278;')
+    incluir_pokemon('Sparky,80.00,Jolteon,555555555;')
+    incluir_pokemon('Charla,150.00,Charizard,555551278;')
+    incluir_pokemon('Aurora,65.50,Butterfree,555551278;')
+    incluir_pokemon('Ghastly,100.50,Ghastly,555551278;')
+    incluir_pokemon('Rafa Zapdos,600,Zapdos,555551278;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
     atualizar_pessoa(555551278,'Rafa','24/03/1999')
@@ -512,13 +584,14 @@ def main():
     #print (retorna_pokemons_de_pessoa_id_treinador(555551278))
     pokemons_voadores = retorna_pokemons_do_tipo('Voador')
     pokemons_voadores.sort(key=lambda x:x[1])
-    #print (pokemons_voadores)
+    print (pokemons_voadores)
     #excluir_pessoa (555551278)
     #print (retorna_tabela_pokemons())
     #print (retorna_tabela_pessoas())
     #print (retorna_propietarios_de_especie('Charizard'))
     #print (retorna_pokemons_de_pessoa_nome_treinador('Rafa'))
-    print (retorna_treinadores_com_custo_maior(900))
+    #print (retorna_treinadores_com_custo_maior(900))
+    #print (retorna_tabela_especies())
     deletar_base_de_dados()
     return
 
