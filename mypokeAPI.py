@@ -1,6 +1,6 @@
 #####################################################################
 # myPokeAPI.py - API de manutenção do banco de dados myPoké
-# Versão: 0.8
+# Versão: 0.8.1
 #
 # Contribuidores: Lucas Emery
 #                 Thiago Damasceno
@@ -21,6 +21,7 @@
 #   0.7.0: Implementação das funções de consulta
 #   0.7.1: Implementação de Querries avançadas
 #   0.8.0 Implementação da tabela "Espécies"
+#   0.8.1 Hotfix nas funções de retorno de tabela
 #
 #####################################################################
 #
@@ -373,7 +374,7 @@ def retorna_tabela_pokemons():
     connection = psycopg2.connect(**params)
     cursor = connection.cursor()
 
-    cursor.execute ("SELECT * FROM pokemons")
+    cursor.execute ("SELECT * FROM pokemons NATURAL JOIN especies")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
