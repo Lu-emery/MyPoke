@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template
+from flask_login import login_required, current_user
 
 views = Blueprint('views', __name__)
 
 @views.route('/home')
+@login_required
 def home():
-    return render_template("landing.html", user_name="User")
+    return render_template("landing.html", user=current_user)
 
 @views.route('/pokemon/add')
 def pokemon_add():
-    return render_template("pokemon_add.html", user_name="User")
+    return render_template("pokemon_add.html", user=current_user)

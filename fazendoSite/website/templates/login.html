@@ -15,13 +15,15 @@
 {% endblock %}
 
 {% block home_btn %}
-    <a class="nav-link active" aria-current="page" href="/">Login</a>
+    <a class="nav-link disabled" aria-current="page" href="">Home</a>
 {% endblock %}
 
 {% block main %}
     <div class="form-signin w-100 m-auto text-center mt-2">
-        <form>
-            <img class="mb-4" src="static/MyPoke.png" alt="" width="100%" height="100%">
+        <form method="POST">
+            <a href="/">
+                <img class="mb-4" src="static/MyPoke.png" alt="" width="100%" height="100%">
+            </a>
             <h1 class="h3 mb-3 fw-normal">Login</h1>
         
             <div class="form-floating">
@@ -36,7 +38,7 @@
         
             <div class="checkbox mb-3">
                 <label for="remember-me">
-                    <input type="checkbox" value="remember-me" name="remember-me"> Lembre-se de mim
+                    <input type="checkbox" value="" id="remember-me" name="remember-me"> Mantenha-me conectado
                 </label>
             </div>
             
