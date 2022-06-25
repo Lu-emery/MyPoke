@@ -15,7 +15,6 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         remember = request.form.get('remember-me')
-        print(remember)
         
         user = User.query.filter_by(username = username).first()
         if user:

@@ -1,0 +1,102 @@
+{% extends "landing.html" %} 
+
+{% block title %}
+    Del Poké
+{% endblock %}
+
+{% block pkmn_collapse %}
+<div class="collapse show" id="home-collapse">
+{% endblock %}
+
+{% block content %}
+    <h3 class="sub-header">Remover Pokémon</h3>
+    <div class="row">
+        <div class="col-sm search-form card card-margin card-body p-0">
+            <form id="query-form" method='POST'>
+                <div class="row no-gutters col-14 text-center">
+                    <div class="col-md-2">
+                        <select class="form-control" id="query-category" name="query-category">
+                            <option>Nome</option>
+                            <option>Tipo</option>
+                            <option>Espécie</option>
+                            <option>ID de Treinador</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9 p-0">
+                        <input type="text" placeholder="Buscar..." class="form-control" id="query-text" name="query-text">
+                    </div>
+                    <div class="col-md-1 p-0">
+                        <button type="submit" class="btn btn-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <br><br>
+
+    <h3 class="sub-header">Pokémon</h3>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Nome</th>
+                    <th>Espécie</th>
+                    <th>Tipo Primário</th>
+                    <th>Tipo Secundário</th>
+                    <th>ID de Treinador</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onclick="getRow(this)">
+                        </div>
+                    </td>
+                    <td>xrr</td>
+                    <td>Xatu</td>
+                    <td>Psíquico</td>
+                    <td>Voador</td>
+                    <td>123123</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onclick="getRow(this)">
+                        </div>
+                    </td>
+                    <td>Charla</td>
+                    <td>Charizard</td>
+                    <td>Fogo</td>
+                    <td>Voador</td>
+                    <td>69420</td>
+                </tr>
+                <tr>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onclick="getRow(this)">
+                        </div>
+                    </td>
+                    <td>Ash's Pikachu</td>
+                    <td>Pikachu</td>
+                    <td>Elétrico</td>
+                    <td></td>
+                    <td>444444</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <button type="button" class="btn btn-primary" style="float:right;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
+            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
+        </svg>
+        Apagar
+    </button>
+{% endblock %}

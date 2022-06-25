@@ -28,12 +28,14 @@
                             <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
                                 Treinadores
                             </button>
+                            {% block trn_collapse %}
                             <div class="collapse" id="home-collapse">
+                            {% endblock %}
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="treinador/srch" class="link-dark rounded">Pesquisar</a></li>
-                                    <li><a href="treinador/add" class="link-dark rounded">Adicionar</a></li>
-                                    <li><a href="treinador/del" class="link-dark rounded">Remover</a></li>
-                                    <li><a href="treinador/upd" class="link-dark rounded">Atualizar</a></li>
+                                    <li><a href="/trn/srch" class="link-dark rounded">Pesquisar</a></li>
+                                    <li><a href="/trn/add" class="link-dark rounded">Adicionar</a></li>
+                                    <li><a href="/trn/del" class="link-dark rounded">Remover</a></li>
+                                    <li><a href="/trn/upd" class="link-dark rounded">Atualizar</a></li>
                                 </ul>
                             </div>
                         </li>    
@@ -41,12 +43,14 @@
                             <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
                                 Pokémon
                             </button>
+                            {% block pkmn_collapse %}
                             <div class="collapse" id="dashboard-collapse">
+                            {% endblock %}
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-                                    <li><a href="pokemon/srch" class="link-dark rounded">Pesquisar</a></li>
-                                    <li><a href="pokemon/add" class="link-dark rounded">Adicionar</a></li>
-                                    <li><a href="pokemon/del" class="link-dark rounded">Remover</a></li>
-                                    <li><a href="pokemon/upd" class="link-dark rounded">Atualizar</a></li>
+                                    <li><a href="/pkmn/srch" class="link-dark rounded">Pesquisar</a></li>
+                                    <li><a href="/pkmn/add" class="link-dark rounded">Adicionar</a></li>
+                                    <li><a href="/pkmn/del" class="link-dark rounded">Remover</a></li>
+                                    <li><a href="/pkmn/upd" class="link-dark rounded">Atualizar</a></li>
                                 </ul>
                             </div>
                         </li>
