@@ -1,0 +1,61 @@
+{% extends "base.html" %} 
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block imports %}
+    <link rel="stylesheet" href="https://getbootstrap.com/docs/5.2/examples/sidebars/sidebars.css">         
+{% endblock %}
+
+{% block name %}
+    {{user_name}}
+{% endblock %}
+
+{% block name_link %}
+    <a class="navbar-text" href="/logout">
+        Sair
+    </a>
+{% endblock %}
+
+{% block main %}
+    <div class="container-fluid vh-100 overflow-hidden">
+        <div class="row h-100">
+            <div class="col-sm-3 col-md-2 sidebar h-100">
+                <div class="flex-shrink-0 p-3">
+                    <ul class="list-unstyled ps-0">
+                        <li class="mb-1">
+                            <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#home-collapse" aria-expanded="false">
+                                Treinadores
+                            </button>
+                            <div class="collapse" id="home-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="treinador/srch" class="link-dark rounded">Pesquisar</a></li>
+                                    <li><a href="treinador/add" class="link-dark rounded">Adicionar</a></li>
+                                    <li><a href="treinador/del" class="link-dark rounded">Remover</a></li>
+                                    <li><a href="treinador/upd" class="link-dark rounded">Atualizar</a></li>
+                                </ul>
+                            </div>
+                        </li>    
+                        <li class="mb-1">
+                            <button class="btn btn-toggle align-items-center rounded collapsed" data-bs-toggle="collapse" data-bs-target="#dashboard-collapse" aria-expanded="false">
+                                Pokémon
+                            </button>
+                            <div class="collapse" id="dashboard-collapse">
+                                <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+                                    <li><a href="pokemon/srch" class="link-dark rounded">Pesquisar</a></li>
+                                    <li><a href="pokemon/add" class="link-dark rounded">Adicionar</a></li>
+                                    <li><a href="pokemon/del" class="link-dark rounded">Remover</a></li>
+                                    <li><a href="pokemon/upd" class="link-dark rounded">Atualizar</a></li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-1 main overflow-auto text-center align-middle">
+                {% block content %}<img class="mb-4" src="static/MyPoke.png" alt="">{% endblock %}
+            </div> 
+        </div>    
+    </div>
+{% endblock %}
