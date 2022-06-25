@@ -1,8 +1,8 @@
-from website import criarApp
+from website import criar_app
 
 
 def main():
-    app = criarApp()
+    app = criar_app()
 
     app.run(debug=True)
 

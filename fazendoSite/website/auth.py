@@ -1,5 +1,8 @@
 from unicodedata import category
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, request, flash, redirect, url_for
+from .models import User
+from . import db
+from werkzeug.security import generate_password_hash, check_password_hash
 
 auth = Blueprint('auth', __name__)
 
@@ -27,7 +30,10 @@ def sign_up():
             e = True
         if not e:
             flash('Conta criada com sucesso!', category='SUCCESS')
-            pass
+            new_user = User(username = username, password = generate_password_hash(password, method='sha256'), database = database)
+            db.session.add(new_user)
+            db.session.commit()
+            return redirect(url_for('views.home'))
     return render_template("sign_up.html")
 
 @auth.route('/logout')
