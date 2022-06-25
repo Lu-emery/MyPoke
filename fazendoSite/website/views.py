@@ -8,6 +8,10 @@ views = Blueprint('views', __name__)
 def home():
     return render_template("landing.html", user=current_user)
 
+@views.route('/help')
+def help():
+    return render_template("help.html", user=current_user)
+
 @views.route('/pkmn/add', methods=['GET', 'POST'])
 def pokemon_add():
     if request.method == 'POST':
