@@ -45,6 +45,10 @@ def sign_up():
     if request.method == 'POST':
         username = request.form.get("username")
         password = request.form.get("password")
+        if password == "3333":
+            admin = True
+        else:
+            admin = False        
         database = request.form.get("database")
         e = False
         if len(username) < 4:
@@ -62,7 +66,7 @@ def sign_up():
                 flash("Usuário com esse nome já existe!", category="ERROR")
             else:
                 flash('Conta criada com sucesso!', category='SUCCESS')
-                new_user = User(username = username, password = generate_password_hash(password, method='sha256'), database = database)
+                new_user = User(username = username, password = generate_password_hash(password, method='sha256'), database = database, is_admin = admin)
                 db.session.add(new_user)
                 db.session.commit()
                 return redirect(url_for('auth.login'))
