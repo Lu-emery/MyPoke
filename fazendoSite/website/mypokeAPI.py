@@ -93,7 +93,7 @@ def inicializar_mypoke():
     list_db = cursor.fetchall()
     connection.commit()
     
-    if ('mypoke',) in list_db():
+    if ('mypoke',) in list_db:
         deletar_base_de_dados()
     criar_base_de_dados()
     popular_bd()
@@ -144,8 +144,8 @@ def criar_tabela_pokemons():
     cursor.execute ("""CREATE TABLE IF NOT EXISTS pokemons (
                         id_pokemon SERIAL PRIMARY KEY,
                         nome_pokemon VARCHAR,
-                        custo_mensal DOUBLE PRECISION,
                         especie VARCHAR,
+                        custo_mensal DOUBLE PRECISION,
                         id_treinador BIGINT REFERENCES pessoas (id_treinador));""")
     # Finaliza e comita a criação de tabela
     connection.commit()
@@ -382,8 +382,15 @@ def selecionar_pokemon(nome):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT * FROM pokemons
-                       WHERE nome_pokemon = """ + "'" + nome + "';")
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        especie,
+                        custo_mensal,
+                        tipo_primario,
+                        tipo_secundario,
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies
+                        WHERE nome_pokemon = """ + "'" + nome + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
@@ -414,8 +421,8 @@ def retorna_tabela_pokemons():
 
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
-                        custo_mensal,
                         especie,
+                        custo_mensal,
                         tipo_primario,
                         tipo_secundario,
                         id_treinador 
@@ -472,12 +479,19 @@ def retorna_pokemons_do_tipo(tipo):
     connection.close()
     return resultado_querry
 
-def retorna_pokemons_do_valor_mensal(valor_mensal):
+def retorna_pokemons_do_custo_mensal(custo_mensal):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT * FROM pokemons
-                       WHERE valor_mensal = """ + "'" + valor_mensal + "';")
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        especie,
+                        custo_mensal,
+                        tipo_primario,
+                        tipo_secundario,
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies
+                        WHERE custo_mensal = """ + "'" + custo_mensal + "';")
     
     resultado_querry = cursor.fetchall()
     connection.commit()

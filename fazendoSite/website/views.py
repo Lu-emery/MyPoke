@@ -40,9 +40,9 @@ def pokemon_add():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                db = selecionar_pokemon(query_text)
+                db = [selecionar_pokemon(query_text)]
             elif query_category == 'Valor Mensal':
-                db = retorna_pokemons_do_valor_mensal(query_text)
+                db = retorna_pokemons_do_custo_mensal(query_text)
             elif query_category == 'Tipo':
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
@@ -60,13 +60,9 @@ def pokemon_srch():
         query_category = request.form.get('query-category')
         query_text = request.form.get('query-text')
         if query_category == 'Nome':
-<<<<<<< HEAD
-            db = selecionar_pokemon (query_text)
-=======
-            db = selecionar_pokemon(query_text)
->>>>>>> 469c1fb6be7ecb5c9940d7abd6bc17df61612d59
+            db = [selecionar_pokemon(query_text)]
         elif query_category == 'Valor Mensal':
-            db = retorna_pokemons_do_valor_mensal(query_text)
+            db = retorna_pokemons_do_custo_mensal(query_text)
         elif query_category == 'Tipo':
             db = retorna_pokemons_do_tipo(query_text)
         elif query_category == 'Espécie':
@@ -91,9 +87,9 @@ def pokemon_del():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                db = selecionar_pokemon(query_text)
+                db = [selecionar_pokemon(query_text)]
             elif query_category == 'Valor Mensal':
-                db = retorna_pokemons_do_valor_mensal(query_text)
+                db = retorna_pokemons_do_custo_mensal(query_text)
             elif query_category == 'Tipo':
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
@@ -130,9 +126,9 @@ def pokemon_upd():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                db = selecionar_pokemon(query_text)
+                db = [selecionar_pokemon(query_text)]
             elif query_category == 'Valor Mensal':
-                db = retorna_pokemons_do_valor_mensal(query_text)
+                db = retorna_pokemons_do_custo_mensal(query_text)
             elif query_category == 'Tipo':
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
