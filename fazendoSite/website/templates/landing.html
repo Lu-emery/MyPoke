@@ -19,9 +19,9 @@
 {% endblock %}
 
 {% block main %}
-    <div class="container-fluid vh-100 overflow-hidden">
+    <div class="container-fluid vh-90 overflow-auto">
         <div class="row h-100">
-            <div class="col-sm-3 col-md-2 sidebar h-100">
+            <div class="col-sm-3 col-md-2 sidebar">
                 <div class="flex-shrink-0 p-3">
                     <ul class="list-unstyled ps-0">
                         <li class="mb-1">
@@ -61,7 +61,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-1 main overflow-auto text-center align-middle">
+            <div class="col-sm-9 col-sm-offset-3 col-md-9 col-md-offset-1 main text-center">
                 {% block content %}<img class="mb-4" src="static/MyPoke.png" alt="">{% endblock %}
             </div> 
         </div>    

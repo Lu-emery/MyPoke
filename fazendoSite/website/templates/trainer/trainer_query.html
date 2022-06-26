@@ -39,7 +39,7 @@
     <br><br>
 
     <h3 class="sub-header">Treinador</h3>
-    <div class="table-responsive">
+    <div class="table-responsive h-100">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -50,21 +50,13 @@
             </thead>
 
             <tbody>
-                <tr>
-                    <td>Red</td>
-                    <td>111111</td>
-                    <td>08/08/2002</td>
-                </tr>
-                <tr>
-                    <td>Ash Ketchum</td>
-                    <td>444444</td>
-                    <td>15/09/2012</td>
-                </tr>
-                <tr>
-                    <td>Gary Oak</td>
-                    <td>999999</td>
-                    <td>06/04/1984</td>
-                </tr>
+                {% for trainer in db %}
+                    <tr>
+                        <td>{{ trainer[0] }}</td>
+                        <td>{{ trainer[1] }}</td>
+                        <td>{{ trainer[2] }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
