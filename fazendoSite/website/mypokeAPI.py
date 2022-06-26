@@ -548,7 +548,7 @@ def excluir_pokemon(nome_pokemon):
     cursor = connection.cursor()
 
     # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'nome_pokemon' igual ao argumento
-    cursor.execute ("DELETE FROM pokemons WHERE nome = " + "'" + nome_pokemon + "'" + ";")
+    cursor.execute ("DELETE FROM pokemons WHERE nome_pokemon = " + "'" + nome_pokemon + "'" + ";")
     # Completa e commita o processo de remoção
     connection.commit()
 

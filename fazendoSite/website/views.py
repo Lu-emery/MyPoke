@@ -5,13 +5,6 @@ from .mypokeAPI import *
 import sys
 sys.path.append("..")
 
-
-#import psycopg2
-#USER='postgres'
-#PASSWORD='senha'
-#HOST='127.0.0.1'
-#PORT='5432'
-
 views = Blueprint('views', __name__)
 
 @views.route('/home')
@@ -34,7 +27,7 @@ def pokemon_add():
             species = request.form.get('add-species')
             prim_type = request.form.get('add-type-prim')
             sec_type = request.form.get('add-type-sec')
-            incluir_pokemon(name+","+cost+","+species+","+trn_id)
+            incluir_pokemon(name+","+cost+","+species+","+trn_id+","+prim_type+","+sec_type)
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -49,7 +42,7 @@ def pokemon_add():
                 db = retorna_pokemons_da_especie(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
-            return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
+            return render_template("pokemon/pokemon_add.html", user=current_user, db=db)
         
     db = retorna_tabela_pokemons()
     return render_template("pokemon/pokemon_add.html", user=current_user, db=db)
@@ -79,9 +72,8 @@ def pokemon_srch():
 def pokemon_del():
     if request.method == 'POST':
         if request.form.get('query-category') == None:
-            # Del
-            pass
-            #TODO fazer o delete
+            remove_name = request.form.get('remove-name')
+            excluir_pokemon(remove_name)
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -96,7 +88,7 @@ def pokemon_del():
                 db = retorna_pokemons_da_especie(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
-            return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
+            return render_template("pokemon/pokemon_remove.html", user=current_user, db=db)
         
     db = retorna_tabela_pokemons()
     return render_template("pokemon/pokemon_remove.html", user=current_user, db=db)
@@ -113,8 +105,6 @@ def pokemon_upd():
                 trn_id = request.form.get('upd-id')
                 species = request.form.get('upd-species')
                 cost = request.form.get('upd-cost')
-                prim_type = request.form.get('upd-type-prim')
-                sec_type = request.form.get('upd-type-sec')
                 data = [cost, species, trn_id]
                 old_data = selecionar_pokemon(name)
                 for count, elem in enumerate(data):
@@ -135,7 +125,7 @@ def pokemon_upd():
                 db = retorna_pokemons_da_especie(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
-            return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
+            return render_template("pokemon/pokemon_update.html", user=current_user, db=db)
         
     db = retorna_tabela_pokemons()
     return render_template("pokemon/pokemon_update.html", user=current_user, db=db)
@@ -147,9 +137,7 @@ def trainer_add():
             # Add
             name = request.form.get('add-name')
             trn_id = request.form.get('add-id')
-            birthday = request.form.get('add-date')
-            
-            print(birthday)
+            birthday = converte_birthday(request.form.get('add-date'))
             
             incluir_pessoa(name+","+trn_id+","+birthday)
         else:
@@ -198,9 +186,8 @@ def trainer_srch():
 def trainer_del():
     if request.method == 'POST':
         if request.form.get('query-category') == None:
-            # Del
-            pass
-            #TODO fazer o add
+            remove_id = request.form.get('remove-id')
+            excluir_pessoa(remove_id)
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -231,13 +218,14 @@ def trainer_upd():
                 flash("Por favor insira o ID do treinador a ser atualizado.", category="ERROR")
             else:
                 name = request.form.get('upd-name')
-                birthday = request.form.get('upd-date')
-                data = [name, birthday]
+                birthday = converte_birthday(request.form.get('upd-date'))
                 old_data = selecionar_pessoa(trn_id)
-                for count, elem in enumerate(data):
-                    if elem == "":
-                        data[count] = old_data[count+1]
-                atualizar_pessoa(trn_id, data[0], data[1])            
+                print(old_data)
+                if name == "":
+                    name = old_data[0]
+                if birthday == "":
+                    birthday = old_data[2]
+                atualizar_pessoa(trn_id, name, birthday)            
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -258,3 +246,16 @@ def trainer_upd():
     
     db = retorna_tabela_pessoas()
     return render_template("trainer/trainer_update.html", user=current_user, db=db)
+
+def converte_birthday(old_birthday):
+    print(old_birthday)
+    b = old_birthday.split("-")
+    print(b)
+    b.reverse()
+    print(b)
+    birthday = ""
+    for u in b:
+        birthday += u
+        birthday += "/"
+    birthday = birthday[:-1]
+    return birthday
