@@ -317,8 +317,8 @@ def incluir_pokemon(entrada):
 
     cursor.execute ("""SELECT especie FROM especies""")
     lista_especies = cursor.fetchall()
-    if (especie not in lista_especies):
-        incluir_especie (especie + tipo_primario + tipo_secudario)
+    if ((especie,) not in lista_especies):
+        incluir_especie (especie +','+ tipo_primario +','+ tipo_secudario)
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
     cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, id_treinador) 
@@ -373,13 +373,13 @@ def selecionar_pessoa(id_treinador):
     cursor = connection.cursor()
 
     cursor.execute ("""SELECT * FROM pessoas
-                       WHERE id_treinador = """ + str (id_treinador) + ";")
+                       WHERE id_treinador = """ + "'" + str (id_treinador) + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
     cursor.close()
     connection.close()
-    return resultado_querry.pop()
+    return resultado_querry
 
 def selecionar_pokemon(nome):
 
@@ -401,9 +401,9 @@ def selecionar_pokemon(nome):
 
     cursor.close()
     connection.close()
-    return resultado_querry.pop()
+    return resultado_querry
 
-def selecionar_pessoa(nome):
+def selecionar_pessoas_nome(nome):
 
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
@@ -412,32 +412,16 @@ def selecionar_pessoa(nome):
     cursor.execute ("""SELECT nome_treinador,
                         id_treinador,
                         data_nascimento
+                        FROM pessoas
                         WHERE nome_treinador = """ + "'" + nome + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
     cursor.close()
     connection.close()
-    return resultado_querry.pop()
+    return resultado_querry
 
-def selecionar_pessoa(id):
-
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("""SELECT nome_treinador,
-                        id_treinador,
-                        data_nascimento
-                        WHERE id_treinador = """ + "'" + id + "';")
-    resultado_querry = cursor.fetchall()
-    connection.commit()
-
-    cursor.close()
-    connection.close()
-    return resultado_querry.pop()
-
-def selecionar_pessoa(data_nascimento):
+def selecionar_pessoas_data_nasc(data_nascimento):
 
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
@@ -446,13 +430,14 @@ def selecionar_pessoa(data_nascimento):
     cursor.execute ("""SELECT nome_treinador,
                         id_treinador,
                         data_nascimento
+                        FROM pessoas
                         WHERE data_nascimento = """ + "'" + data_nascimento + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
     cursor.close()
     connection.close()
-    return resultado_querry.pop()
+    return resultado_querry
 
 
 def retorna_tabela_pessoas():
@@ -488,7 +473,6 @@ def retorna_tabela_pokemons():
 
     cursor.close()
     connection.close()
-    print (resultado_querry)
     return resultado_querry
 
 def retorna_tabela_especies():
@@ -700,22 +684,16 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
 
 def popular_bd():
     #deletar_base_de_dados()
-    incluir_especie('Charizard,Fogo,Voador')
-    #incluir_especie('Dragonite,Dragao,')
-    incluir_especie('Jolteon,Eletrico,')
-    incluir_especie('Butterfree,Inseto,Voador')
-    incluir_especie('Ghastly,Fantasma,')
-    incluir_especie('Zapdos,Voador,Elétrico')
     incluir_pessoa ('Rafa,555551278,21/03/1999;')
     incluir_pessoa ('Lucas,665551278,16/06/1998;')
     incluir_pessoa ('Carlinhos,555555555,23/05/1994;')
-    incluir_pokemon('Mayu,150.00,Charizard,665551278;')
-    incluir_pokemon('Viny,200.00,Dragonite,665551278;')
-    incluir_pokemon('Sparky,80.00,Jolteon,555555555;')
-    incluir_pokemon('Charla,150.00,Charizard,555551278;')
-    incluir_pokemon('Aurora,65.50,Butterfree,555551278;')
-    incluir_pokemon('Ghastly,100.50,Ghastly,555551278;')
-    incluir_pokemon('Rafa Zapdos,600,Zapdos,555551278;')
+    incluir_pokemon('Mayu,150.00,Charizard,665551278,Fogo,Voador;')
+    incluir_pokemon('Viny,200.00,Dragonite,665551278,Dragao,;')
+    incluir_pokemon('Sparky,80.00,Jolteon,555555555,Eletrico,;')
+    incluir_pokemon('Charla,150.00,Charizard,555551278,Fogo,Voador;')
+    incluir_pokemon('Aurora,65.50,Butterfree,555551278,Inseto,Voador;')
+    incluir_pokemon('Ghastly,100.50,Ghastly,555551278,Fantasma,;')
+    incluir_pokemon('Rafa Zapdos,600,Zapdos,555551278,Voador,Eletrico;')
     #excluir_pokemon ("Charla")
     #excluir_pessoa (555551278)
     #atualizar_pessoa(555551278,'Rafa','24/03/1999')

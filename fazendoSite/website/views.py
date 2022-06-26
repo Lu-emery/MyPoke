@@ -145,16 +145,12 @@ def trainer_add():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                #TODO
-                pass
+                db = selecionar_pessoas_nome(query_text)
             elif query_category == 'ID de Treinador':
-                #TODO
-                pass
+                db = selecionar_pessoa(query_text)
             elif query_category == 'Data de Nascimento':
-                #TODO
-                pass
+                db = selecionar_pessoas_data_nasc(query_text)
 
-            db = retorna_tabela_pessoas()##
             return render_template("trainer/trainer_add.html", user=current_user, db=db)            
         
     db = retorna_tabela_pessoas()
@@ -167,16 +163,12 @@ def trainer_srch():
         query_category = request.form.get('query-category')
         query_text = request.form.get('query-text')
         if query_category == 'Nome':
-            #TODO
-            pass
+            db = selecionar_pessoas_nome(query_text)
         elif query_category == 'ID de Treinador':
-            #TODO
-            pass
+            db = selecionar_pessoa(query_text)
         elif query_category == 'Data de Nascimento':
-            #TODO
-            pass
+            db = selecionar_pessoas_data_nasc(query_text)
         
-        db = retorna_tabela_pessoas()##
         return render_template("trainer/trainer_query.html", user=current_user, db=db) 
     
     db = retorna_tabela_pessoas()
@@ -193,16 +185,12 @@ def trainer_del():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                #TODO
-                pass
+                db = selecionar_pessoas_nome(query_text)
             elif query_category == 'ID de Treinador':
-                #TODO
-                pass
+                db = selecionar_pessoa(query_text)
             elif query_category == 'Data de Nascimento':
-                #TODO
-                pass
+                db = selecionar_pessoas_data_nasc(query_text)
             
-            db = retorna_tabela_pessoas()##
             return render_template("trainer/trainer_remove.html", user=current_user, db=db)
         
     db = retorna_tabela_pessoas()
@@ -231,18 +219,13 @@ def trainer_upd():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                #TODO
-                pass
+                db = selecionar_pessoas_nome(query_text)
             elif query_category == 'ID de Treinador':
-                #TODO
-                pass
+                db = selecionar_pessoa(query_text)
             elif query_category == 'Data de Nascimento':
-                #TODO
-                pass
+                db = selecionar_pessoas_data_nasc(query_text)
             
-            db = retorna_tabela_pessoas()
             return render_template("trainer/trainer_update.html", user=current_user, db=db)
-
     
     db = retorna_tabela_pessoas()
     return render_template("trainer/trainer_update.html", user=current_user, db=db)
