@@ -13,13 +13,17 @@
                 
     <div class="container-md">
         <form class="row g-3" id="add-form" method='POST'>
-            <div class="form-floating col-9">
+            <div class="form-floating col-8">
                 <input type="text" class="form-control" id="add-name" name="add-name" placeholder="Nome">
                 <label for="floatingInput">Nome</label>
             </div>
-            <div class="form-floating col-3">
+            <div class="form-floating col-2">
                 <input type="text" class="form-control" id="add-id" name="add-id" placeholder="ID de Treinador">
                 <label for="floatingInput">ID de Treinador</label>
+            </div>
+            <div class="form-floating col-2">
+                <input type="text" class="form-control" id="add-cost" name="add-cost" placeholder="Custo Mensal">
+                <label for="floatingInput">Custo Mensal</label>
             </div>
             <div class="form-floating col-md-6">
                 <input type="text" class="form-control" id="add-species" name="add-species" placeholder="Espécie">
@@ -55,6 +59,7 @@
                             <option>Nome</option>
                             <option>Tipo</option>
                             <option>Espécie</option>
+                            <option>Valor Mensal</option>
                             <option>ID de Treinador</option>
                         </select>
                     </div>
@@ -76,7 +81,7 @@
     <br><br>
 
     <h3 class="sub-header">Pokémon</h3>
-    <div class="table-responsive">
+    <div class="table-responsive h-100">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -84,32 +89,22 @@
                     <th>Espécie</th>
                     <th>Tipo Primário</th>
                     <th>Tipo Secundário</th>
+                    <th>Custo Mensal</th>
                     <th>ID de Treinador</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td>xrr</td>
-                    <td>Xatu</td>
-                    <td>Psíquico</td>
-                    <td>Voador</td>
-                    <td>123123</td>
-                </tr>
-                <tr>
-                    <td>Charla</td>
-                    <td>Charizard</td>
-                    <td>Fogo</td>
-                    <td>Voador</td>
-                    <td>69420</td>
-                </tr>
-                <tr>
-                    <td>Ash's Pikachu</td>
-                    <td>Pikachu</td>
-                    <td>Elétrico</td>
-                    <td></td>
-                    <td>444444</td>
-                </tr>
+                {% for pokemon in db %}
+                    <tr>
+                        <td>{{ pokemon[1] }}</td>
+                        <td>{{ pokemon[3] }}</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ pokemon[2] }}</td>
+                        <td>{{ pokemon[4] }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

@@ -25,13 +25,13 @@
                 <input type="date" class="form-control" id="upd-date" name="upd-date" placeholder="tipoSec">
                 <label for="floatingInput">Data de Nascimento</label>
             </div>
+            <button type="submit" class="btn btn-primary mt-2" style="float:right;" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                </svg>
+                Atualizar
+            </button>
         </form>
-        <button type="submit" class="btn btn-primary mt-2" style="float:right;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
-            </svg>
-            Atualizar
-        </button>
     </div>
 
     <h3 class="sub-header">Buscar Treinador</h3>
@@ -64,55 +64,33 @@
     <br><br>
 
     <h3 class="sub-header">Treinador</h3>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Nome</th>
-                    <th>ID de Treinador</th>
-                    <th>Data de Nascimento</th>
-                </tr>
-            </thead>
+    <div class="h-100">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Nome</th>
+                        <th>ID de Treinador</th>
+                        <th>Data de Nascimento</th>
+                    </tr>
+                </thead>
 
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </td>
-                    <td>Red</td>
-                    <td>111111</td>
-                    <td>08/08/2002</td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </td>
-                    <td>Ash Ketchum</td>
-                    <td>444444</td>
-                    <td>15/09/2012</td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                        </div>
-                    </td>
-                    <td>Gary Oak</td>
-                    <td>999999</td>
-                    <td>06/04/1984</td>
-                </tr>
-            </tbody>
-        </table>
+                <tbody>
+                    {% for trainer in db %}
+                        <tr>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                                </div>
+                            </td>
+                            <td>{{ trainer[0] }}</td>
+                            <td>{{ trainer[1] }}</td>
+                            <td>{{ trainer[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-    <button type="button" class="btn btn-primary" style="float:right;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-eraser" viewBox="0 0 16 16">
-            <path d="M8.086 2.207a2 2 0 0 1 2.828 0l3.879 3.879a2 2 0 0 1 0 2.828l-5.5 5.5A2 2 0 0 1 7.879 15H5.12a2 2 0 0 1-1.414-.586l-2.5-2.5a2 2 0 0 1 0-2.828l6.879-6.879zm2.121.707a1 1 0 0 0-1.414 0L4.16 7.547l5.293 5.293 4.633-4.633a1 1 0 0 0 0-1.414l-3.879-3.879zM8.746 13.547 3.453 8.254 1.914 9.793a1 1 0 0 0 0 1.414l2.5 2.5a1 1 0 0 0 .707.293H7.88a1 1 0 0 0 .707-.293l.16-.16z"/>
-        </svg>
-        Atualizar
-    </button>
 {% endblock %}

@@ -19,6 +19,7 @@
                             <option>Nome</option>
                             <option>Tipo</option>
                             <option>Espécie</option>
+                            <option>Valor Mensal</option>
                             <option>ID de Treinador</option>
                         </select>
                     </div>
@@ -39,21 +40,8 @@
 
     <br><br>
 
-    <div class="row">
-        <div class="w-50 text-center">
-            <img src="placeholder.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Label</h4>
-            <span class="text-muted">Something else</span>
-        </div>
-        <div class="w-50 text-center">
-            <img src="placeholder.png" width="200" height="200" class="img-responsive" alt="Generic placeholder thumbnail">
-            <h4>Label</h4>
-            <span class="text-muted">Something else</span>
-        </div>
-    </div>
-
     <h3 class="sub-header">Pokémon</h3>
-    <div class="table-responsive">
+    <div class="table-responsive h-100">
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -61,32 +49,22 @@
                     <th>Espécie</th>
                     <th>Tipo Primário</th>
                     <th>Tipo Secundário</th>
+                    <th>Custo Mensal</th>
                     <th>ID de Treinador</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td>xrr</td>
-                    <td>Xatu</td>
-                    <td>Psíquico</td>
-                    <td>Voador</td>
-                    <td>123123</td>
-                </tr>
-                <tr>
-                    <td>Charla</td>
-                    <td>Charizard</td>
-                    <td>Fogo</td>
-                    <td>Voador</td>
-                    <td>69420</td>
-                </tr>
-                <tr>
-                    <td>Ash's Pikachu</td>
-                    <td>Pikachu</td>
-                    <td>Elétrico</td>
-                    <td></td>
-                    <td>444444</td>
-                </tr>
+                {% for pokemon in db %}
+                    <tr>
+                        <td>{{ pokemon[1] }}</td>
+                        <td>{{ pokemon[3] }}</td>
+                        <td></td>
+                        <td></td>
+                        <td>{{ pokemon[2] }}</td>
+                        <td>{{ pokemon[4] }}</td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
