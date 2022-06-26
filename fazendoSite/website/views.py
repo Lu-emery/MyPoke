@@ -60,7 +60,7 @@ def pokemon_srch():
         query_category = request.form.get('query-category')
         query_text = request.form.get('query-text')
         if query_category == 'Nome':
-            pass #TODO
+            db = selecionar_pokemon (query_text)
         elif query_category == 'Valor Mensal':
             pass #TODO
         elif query_category == 'Tipo':

@@ -251,8 +251,6 @@ def incluir_especie(entrada):
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
     especie, tipo_primario, tipo_secundario = (entrada.replace(';', '')).split(',')
-    if (tipo_secundario == ''):
-        tipo_secundario = 'NULL'
     valores = "'" + especie + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'"
 
     cursor.execute ("""INSERT INTO especies (especie, tipo_primario, tipo_secundario) 
@@ -406,7 +404,7 @@ def retorna_tabela_pokemons():
                         custo_mensal,
                         especie,
                         tipo_primario,
-                        COALESCE (tipo_secundario, ' '),
+                        tipo_secundario,
                         id_treinador 
                         FROM pokemons NATURAL JOIN especies""")
     resultado_querry = cursor.fetchall()
