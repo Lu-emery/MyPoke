@@ -105,12 +105,14 @@ def pokemon_upd():
                 trn_id = request.form.get('upd-id')
                 species = request.form.get('upd-species')
                 cost = request.form.get('upd-cost')
-                data = [cost, species, trn_id]
-                old_data = selecionar_pokemon(name)
-                for count, elem in enumerate(data):
-                    if elem == "":
-                        data[count] = str(old_data[count+2])
-                atualizar_pokemon(name, data[0], data[1], data[2])
+                old_data = selecionar_pokemon(name).pop()
+                if (trn_id == ''):
+                    trn_id = old_data[6]
+                if (species == ''):
+                    species = old_data[2]
+                if (cost == ''):
+                    cost = old_data[3]
+                atualizar_pokemon(name, cost, species, trn_id)
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -207,7 +209,7 @@ def trainer_upd():
             else:
                 name = request.form.get('upd-name')
                 birthday = converte_birthday(request.form.get('upd-date'))
-                old_data = selecionar_pessoa(trn_id)
+                old_data = selecionar_pessoa(trn_id).pop()
                 print(old_data)
                 if name == "":
                     name = old_data[0]
