@@ -699,7 +699,6 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
 # TODO: REMOVER
 
 def popular_bd():
-    #deletar_base_de_dados()
     incluir_especie('Charizard,Fogo,Voador')
     #incluir_especie('Dragonite,Dragao,')
     incluir_especie('Jolteon,Eletrico,')
@@ -716,22 +715,4 @@ def popular_bd():
     incluir_pokemon('Aurora,65.50,Butterfree,555551278;')
     incluir_pokemon('Ghastly,100.50,Ghastly,555551278;')
     incluir_pokemon('Rafa Zapdos,600,Zapdos,555551278;')
-    #excluir_pokemon ("Charla")
-    #excluir_pessoa (555551278)
-    #atualizar_pessoa(555551278,'Rafa','24/03/1999')
-    #reiniciar_tabela('pessoas')
-    #print (retorna_tabela_pokemons())
-    #print (selecionar_pessoa(555551278))
-    #print (retorna_pokemons_de_pessoa_id_treinador(555551278))
-    #pokemons_voadores = retorna_pokemons_do_tipo('Voador')
-    #pokemons_voadores.sort(key=lambda x:x[1])
-    #print (pokemons_voadores)
-    #excluir_pessoa (555551278)
-    #print (retorna_tabela_pokemons())
-    #print (retorna_tabela_pessoas())
-    #print (retorna_propietarios_de_especie('Charizard'))
-    #print (retorna_pokemons_de_pessoa_nome_treinador('Rafa'))
-    #print (retorna_treinadores_com_custo_maior(900))
-    #print (retorna_tabela_especies())
-    #deletar_base_de_dados()
     return
