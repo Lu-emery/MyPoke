@@ -312,8 +312,13 @@ def incluir_pokemon(entrada):
     cursor = connection.cursor()
 
     # Divide a string de entrada nos parâmetros referentes aos campos da tabela e armazena em 'valores'
-    nome, custo_mensal, especie, id_treinador = (entrada.replace(';', '')).split(',')
+    nome, custo_mensal, especie, id_treinador, tipo_primario, tipo_secudario = (entrada.replace(';', '')).split(',')
     valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + especie + "'" + ", " + "'" + str (id_treinador) + "'"
+
+    cursor.execute ("""SELECT especie FROM especies""")
+    lista_especies = cursor.fetchall()
+    if (especie not in lista_especies):
+        incluir_especie (especie + tipo_primario + tipo_secudario)
 
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
     cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, id_treinador) 
@@ -391,6 +396,57 @@ def selecionar_pokemon(nome):
                         id_treinador 
                         FROM pokemons NATURAL JOIN especies
                         WHERE nome_pokemon = """ + "'" + nome + "';")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry.pop()
+
+def selecionar_pessoa(nome):
+
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT nome_treinador,
+                        id_treinador,
+                        data_nascimento
+                        WHERE nome_treinador = """ + "'" + nome + "';")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry.pop()
+
+def selecionar_pessoa(id):
+
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT nome_treinador,
+                        id_treinador,
+                        data_nascimento
+                        WHERE id_treinador = """ + "'" + id + "';")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry.pop()
+
+def selecionar_pessoa(data_nascimento):
+
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT nome_treinador,
+                        id_treinador,
+                        data_nascimento
+                        WHERE data_nascimento = """ + "'" + data_nascimento + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
@@ -645,7 +701,7 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
 def popular_bd():
     #deletar_base_de_dados()
     incluir_especie('Charizard,Fogo,Voador')
-    incluir_especie('Dragonite,Dragao,')
+    #incluir_especie('Dragonite,Dragao,')
     incluir_especie('Jolteon,Eletrico,')
     incluir_especie('Butterfree,Inseto,Voador')
     incluir_especie('Ghastly,Fantasma,')
