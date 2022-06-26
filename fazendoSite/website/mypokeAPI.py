@@ -401,12 +401,20 @@ def retorna_tabela_pokemons():
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("SELECT * FROM pokemons")
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        custo_mensal,
+                        especie,
+                        tipo_primario,
+                        COALESCE (tipo_secundario, ' '),
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies""")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
     cursor.close()
     connection.close()
+    print (resultado_querry)
     return resultado_querry
 
 def retorna_tabela_especies():
@@ -526,6 +534,20 @@ def excluir_especie(especie):
 
 # QUERRIES AVANÇADAS
 
+def retorna_tipos_especie(especie):
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT tipo primario, tipo secundario FROM especies
+                       WHERE especie = """ + "'" + especie + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
 def retorna_propietarios_de_especie(especie):
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
@@ -583,14 +605,12 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
 
 def popular_bd():
     #deletar_base_de_dados()
-    """
     incluir_especie('Charizard,Fogo,Voador')
     incluir_especie('Dragonite,Dragao,')
     incluir_especie('Jolteon,Eletrico,')
     incluir_especie('Butterfree,Inseto,Voador')
     incluir_especie('Ghastly,Fantasma,')
     incluir_especie('Zapdos,Voador,Elétrico')
-    """
     incluir_pessoa ('Rafa,555551278,21/03/1999;')
     incluir_pessoa ('Lucas,665551278,16/06/1998;')
     incluir_pessoa ('Carlinhos,555555555,23/05/1994;')
