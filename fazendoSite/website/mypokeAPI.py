@@ -461,9 +461,6 @@ def retorna_tabela_pokemons():
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-<<<<<<< HEAD:mypokeAPI.py
-    cursor.execute ("SELECT * FROM pokemons NATURAL JOIN especies")
-=======
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -472,7 +469,6 @@ def retorna_tabela_pokemons():
                         tipo_secundario,
                         id_treinador 
                         FROM pokemons NATURAL JOIN especies""")
->>>>>>> desenvolvimento:fazendoSite/website/mypokeAPI.py
     resultado_querry = cursor.fetchall()
     connection.commit()
 
