@@ -1,10 +1,8 @@
-from website import criar_app, deletar_base_de_dados, criar_base_de_dados, popular_bd
+from website import inicializar_mypoke
 
 
 def main():
-    deletar_base_de_dados()
-    criar_base_de_dados()
-    popular_bd()
+    inicializar_mypoke()
     
     app = criar_app()
     app.run(debug=True)

@@ -83,10 +83,23 @@ def deletar_base_de_dados():
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
-
-def reiniciar_base_de_dados():
-    deletar_base_de_dados()
+    
+def inicializar_mypoke():
+    connection = psycopg2.connect(database = 'postgres', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    connection.autocommit = True
+    cursor = connection.cursor()
+    
+    cursor.execute('SELECT datname FROM pg_database')
+    list_db = cursor.fetchall()
+    connection.commit()
+    
+    if ('mypoke',) in list_db():
+        deletar_base_de_dados()
     criar_base_de_dados()
+    popular_bd()
+    
+    cursor.close()
+    connection.close()
 
 
 # criar_tabela_pessoas()
@@ -449,6 +462,20 @@ def retorna_pokemons_do_tipo(tipo):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_pokemons_do_valor_mensal(valor_mensal):
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT * FROM pokemons
+                       WHERE valor_mensal = """ + "'" + valor_mensal + "';")
+    
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+    
     cursor.close()
     connection.close()
     return resultado_querry

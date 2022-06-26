@@ -40,9 +40,9 @@ def pokemon_add():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                pass #TODO
+                db = selecionar_pokemon(query_text)
             elif query_category == 'Valor Mensal':
-                pass #TODO
+                db = retorna_pokemons_do_valor_mensal(query_text)
             elif query_category == 'Tipo':
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
@@ -60,9 +60,9 @@ def pokemon_srch():
         query_category = request.form.get('query-category')
         query_text = request.form.get('query-text')
         if query_category == 'Nome':
-            pass #TODO
+            db = selecionar_pokemon(query_text)
         elif query_category == 'Valor Mensal':
-            pass #TODO
+            db = retorna_pokemons_do_valor_mensal(query_text)
         elif query_category == 'Tipo':
             db = retorna_pokemons_do_tipo(query_text)
         elif query_category == 'Espécie':
@@ -87,9 +87,9 @@ def pokemon_del():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                pass #TODO
+                db = selecionar_pokemon(query_text)
             elif query_category == 'Valor Mensal':
-                pass #TODO
+                db = retorna_pokemons_do_valor_mensal(query_text)
             elif query_category == 'Tipo':
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
@@ -126,9 +126,9 @@ def pokemon_upd():
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
-                pass #TODO
+                db = selecionar_pokemon(query_text)
             elif query_category == 'Valor Mensal':
-                pass #TODO
+                db = retorna_pokemons_do_valor_mensal(query_text)
             elif query_category == 'Tipo':
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
