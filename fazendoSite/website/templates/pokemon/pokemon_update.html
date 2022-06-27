@@ -17,17 +17,17 @@
                 <input type="text" class="form-control" id="upd-name" name="upd-name" placeholder="Nome">
                 <label for="floatingInput">Nome</label>
             </div>
-            <div class="form-floating col-2">
+            <div class="form-floating col-4">
                 <input type="text" class="form-control" id="upd-id" name="upd-id" placeholder="ID de Treinador">
                 <label for="floatingInput">ID de Treinador</label>
             </div>
-            <div class="form-floating col-2">
-                <input type="text" class="form-control" id="upd-cost" name="upd-cost" placeholder="Custo Mensal">
-                <label for="floatingInput">Custo Mensal</label>
-            </div>
-            <div class="form-floating col-md-6">
+            <div class="form-floating col-8">
                 <input type="text" class="form-control" id="upd-species" name="upd-species" placeholder="Espécie">
                 <label for="floatingInput">Espécie</label>
+            </div>
+            <div class="form-floating col-4">
+                <input type="text" class="form-control" id="upd-cost" name="upd-cost" placeholder="Custo Mensal">
+                <label for="floatingInput">Custo Mensal</label>
             </div>
             <button type="submit" class="btn btn-primary mt-2" style="float:right;" >
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
@@ -90,7 +90,7 @@
                     {% for pokemon in db %}
                         <tr>
                             <td>{{ pokemon[1] }}</td>
-                            <td>{{ pokemon[2] }}</td>
+                            <td><a href={{ "https://bulbapedia.bulbagarden.net/wiki/%s" % pokemon[2] }}>{{ pokemon[2] }}</a></td>
                             <td>{{ pokemon[4] }}</td>
                             <td>{{ pokemon[5] }}</td>
                             <td>{{ pokemon[3] }}</td>

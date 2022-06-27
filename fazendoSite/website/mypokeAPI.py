@@ -679,10 +679,6 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
     return resultado_querry
 
 
-#################################################################################
-# COMANDOS DE TESTE
-# TODO: REMOVER
-
 def popular_bd():
     incluir_pessoa ('Rafa,555551278,21/03/1999;')
     incluir_pessoa ('Lucas,665551278,16/06/1998;')
@@ -695,3 +691,9 @@ def popular_bd():
     incluir_pokemon('Ghastly,100.50,Ghastly,555551278,Fantasma,;')
     incluir_pokemon('Rafa Zapdos,600,Zapdos,555551278,Voador,Eletrico;')
     return
+
+
+
+
+
+## Hehe nice

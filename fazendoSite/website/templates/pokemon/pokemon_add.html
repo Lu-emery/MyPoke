@@ -98,7 +98,7 @@
                 {% for pokemon in db %}
                     <tr>
                         <td>{{ pokemon[1] }}</td>
-                        <td>{{ pokemon[2] }}</td>
+                        <td><a href={{ "https://bulbapedia.bulbagarden.net/wiki/%s" % pokemon[2] }}>{{ pokemon[2] }}</a></td>
                         <td>{{ pokemon[4] }}</td>
                         <td>{{ pokemon[5] }}</td>
                         <td>{{ pokemon[3] }}</td>

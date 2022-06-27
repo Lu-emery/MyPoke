@@ -71,7 +71,6 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th></th>
                         <th>Nome</th>
                         <th>ID de Treinador</th>
                         <th>Data de Nascimento</th>
@@ -81,11 +80,6 @@
                 <tbody>
                     {% for trainer in db %}
                         <tr>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-                                </div>
-                            </td>
                             <td>{{ trainer[0] }}</td>
                             <td>{{ trainer[1] }}</td>
                             <td>{{ trainer[2] }}</td>
