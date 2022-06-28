@@ -1,4 +1,4 @@
 *.db
 *.cpy*
-*.Identifier
-fazendoSite/website/__pycache__/
+src/website/__pycache__/
+__pycache__/
