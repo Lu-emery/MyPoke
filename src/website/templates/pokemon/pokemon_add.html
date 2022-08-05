@@ -61,6 +61,7 @@
                             <option>Espécie</option>
                             <option>Valor Mensal</option>
                             <option>ID de Treinador</option>
+                            <option>Nome de Treinador</option>
                         </select>
                     </div>
                     <div class="col-md-9 p-0">
@@ -90,7 +91,7 @@
                     <th>Tipo Primário</th>
                     <th>Tipo Secundário</th>
                     <th>Custo Mensal</th>
-                    <th>ID de Treinador</th>
+                    <th>Treinador</th>
                 </tr>
             </thead>
 
@@ -117,7 +118,11 @@
                             {% endif %}
                         </td>
                         <td>{{ pokemon[3] }}</td>
-                        <td>{{ pokemon[6] }}</td>
+                        <td>
+                            <a href="#" title={{ "ID:%s" % pokemon[7] }}>
+                            {{ pokemon[6] }}
+                            </a>
+                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

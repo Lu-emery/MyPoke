@@ -10,33 +10,8 @@
 
 {% block content %}
     <h2 class="sub-header">Remover Pokémon</h2>
-    <div class="row">
-        <div class="col-sm search-form card card-margin card-body p-0">
-            <form id="search-form" method='POST'>
-                <div class="row no-gutters col-14 text-center">
-                    <div class="col-md-2">
-                        <select class="form-control" disabled>
-                            <option>Nome</option>
-                        </select>
-                    </div>
-                    <div class="col-md-9 p-0">
-                        <input type="text" placeholder="Buscar..." class="form-control" id="remove-name" name="remove-name">
-                    </div>
-                    <div class="col-md-1 p-0">
-                        <button type="submit" class="btn btn-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <br><br>
-
-    <h3 class="sub-header">Buscar Pokémon</h3>
+    <h3 class="sub-header">Buscar</h3>
     <div class="row">
         <div class="col-sm search-form card card-margin card-body p-0">
             <form id="query-form" method='POST'>
@@ -48,6 +23,7 @@
                             <option>Espécie</option>
                             <option>Valor Mensal</option>
                             <option>ID de Treinador</option>
+                            <option>Nome de Treinador</option>
                         </select>
                     </div>
                     <div class="col-md-9 p-0">
@@ -78,7 +54,8 @@
                         <th>Tipo Primário</th>
                         <th>Tipo Secundário</th>
                         <th>Custo Mensal</th>
-                        <th>ID de Treinador</th>
+                        <th>Treinador</th>
+                        <th></th>
                     </tr>
                 </thead>
     
@@ -94,7 +71,7 @@
                             <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
                             {{ pokemon[4] }}
                             <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
-                        </td>
+                        </td>   
                         <td>
                             {% if pokemon[5] != "" %}
                                 <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
@@ -105,7 +82,22 @@
                             {% endif %}
                         </td>
                         <td>{{ pokemon[3] }}</td>
-                        <td>{{ pokemon[6] }}</td>
+                        <td>
+                            <a href="#" title={{ "ID:%s" % pokemon[7] }}>
+                            {{ pokemon[6] }}
+                            </a>
+                        </td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="remove-name" value={{ "%s" % pokemon[1]}}>
+                                <button type="submit" class="btn btn-outline-primary h-11 w-12 py-1 px-2">   
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                    </svg>
+                                </button>   
+                            </form>
+                        </td>
                     </tr>
                 {% endfor %}
                 </tbody>

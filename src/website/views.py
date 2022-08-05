@@ -40,6 +40,8 @@ def pokemon_add():
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
                 db = retorna_pokemons_da_especie(query_text)
+            elif query_category == 'Nome de Treinador':
+                db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
             return render_template("pokemon/pokemon_add.html", user=current_user, db=db)
@@ -52,14 +54,17 @@ def pokemon_srch():
     if request.method == 'POST':
         query_category = request.form.get('query-category')
         query_text = request.form.get('query-text')
+        print(query_category+"----------->"+query_text)
         if query_category == 'Nome':
-            db = [selecionar_pokemon(query_text)]
+            db = selecionar_pokemon(query_text)
         elif query_category == 'Valor Mensal':
             db = retorna_pokemons_do_custo_mensal(query_text)
         elif query_category == 'Tipo':
             db = retorna_pokemons_do_tipo(query_text)
         elif query_category == 'Espécie':
             db = retorna_pokemons_da_especie(query_text)
+        elif query_category == 'Nome de Treinador':
+            db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
         elif query_category == 'ID de Treinador':
             db = retorna_pokemons_de_pessoa_id_treinador(query_text)
         return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
@@ -86,6 +91,8 @@ def pokemon_del():
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
                 db = retorna_pokemons_da_especie(query_text)
+            elif query_category == 'Nome de Treinador':
+                db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
             return render_template("pokemon/pokemon_remove.html", user=current_user, db=db)
@@ -125,6 +132,8 @@ def pokemon_upd():
                 db = retorna_pokemons_do_tipo(query_text)
             elif query_category == 'Espécie':
                 db = retorna_pokemons_da_especie(query_text)
+            elif query_category == 'Nome de Treinador':
+                db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
             return render_template("pokemon/pokemon_update.html", user=current_user, db=db)

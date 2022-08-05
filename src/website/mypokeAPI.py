@@ -76,7 +76,7 @@ def deletar_base_de_dados():
     deletar_tabela_pokemons()
     connection.commit()
 
-    cursor.execute ('DROP DATABASE mypoke;')
+    cursor.execute ('DROP DATABASE mypoke;')    
     print('Base de dados mypoke excluída com sucesso!')
     # Completa e commita o processo de remoção
     connection.commit()
@@ -462,8 +462,9 @@ def retorna_tabela_pokemons():
                         custo_mensal,
                         tipo_primario,
                         tipo_secundario,
+                        nome_treinador,
                         id_treinador 
-                        FROM pokemons NATURAL JOIN especies""")
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas""")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
@@ -491,7 +492,15 @@ def retorna_pokemons_de_pessoa_id_treinador(id_treinador):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT * FROM pokemons
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        especie,
+                        custo_mensal,
+                        tipo_primario,
+                        tipo_secundario,
+                        nome_treinador,
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                        WHERE id_treinador = """ + "'" + str(id_treinador) + "'" + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
@@ -506,7 +515,15 @@ def retorna_pokemons_do_tipo(tipo):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT * FROM pokemons NATURAL JOIN especies
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        especie,
+                        custo_mensal,
+                        tipo_primario,
+                        tipo_secundario,
+                        nome_treinador,
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                        WHERE tipo_primario = """ + "'" + tipo + "'" + " OR tipo_secundario = " + "'" + tipo + "'" + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
@@ -525,8 +542,9 @@ def retorna_pokemons_do_custo_mensal(custo_mensal):
                         custo_mensal,
                         tipo_primario,
                         tipo_secundario,
+                        nome_treinador,
                         id_treinador 
-                        FROM pokemons NATURAL JOIN especies
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                         WHERE custo_mensal = """ + "'" + custo_mensal + "';")
     
     resultado_querry = cursor.fetchall()
@@ -542,7 +560,15 @@ def retorna_pokemons_da_especie(especie):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT * FROM pokemons
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        especie,
+                        custo_mensal,
+                        tipo_primario,
+                        tipo_secundario,
+                        nome_treinador,
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                        WHERE especie = """ + "'" + especie + "'" + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
@@ -643,7 +669,15 @@ def retorna_pokemons_de_pessoa_nome_treinador(nome_treinador):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    cursor.execute ("""SELECT nome_pokemon, custo_mensal, especie, tipo_primario, tipo_secundario FROM pokemons NATURAL JOIN pessoas
+    cursor.execute ("""SELECT id_pokemon,
+                        nome_pokemon,
+                        especie,
+                        custo_mensal,
+                        tipo_primario,
+                        tipo_secundario,
+                        nome_treinador,
+                        id_treinador 
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                        WHERE nome_treinador = """ + "'" + nome_treinador + "'" + ";")
     resultado_querry = cursor.fetchall()
     connection.commit()
