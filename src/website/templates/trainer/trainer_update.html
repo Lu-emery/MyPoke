@@ -1,0 +1,92 @@
+{% extends "landing.html" %} 
+
+{% block title %}
+    Upd Trn
+{% endblock %}
+
+{% block trn_collapse %}
+<div class="collapse show" id="home-collapse">
+{% endblock %}
+
+{% block content %}
+    <h2 class="sub-header">Atualizar Treinador</h2>
+                
+    <div class="container-md">
+        <form class="row g-3" id="upd-form" method='POST'>
+            <div class="form-floating col-12">
+                <input type="text" class="form-control" id="upd-name" name="upd-name" placeholder="nome">
+                <label for="floatingInput">Nome</label>
+            </div>
+            <div class="form-floating col-md-6">
+                <input type="text" class="form-control" id="upd-id" name="upd-id" placeholder="tipoPrim">
+                <label for="floatingInput">ID de Treinador<label>
+            </div>
+            <div class="form-floating col-md-6  ">
+                <input type="date" class="form-control" id="upd-date" name="upd-date" placeholder="tipoSec">
+                <label for="floatingInput">Data de Nascimento</label>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2" style="float:right;" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
+                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
+                </svg>
+                Atualizar
+            </button>
+        </form>
+    </div>
+
+    <br><br>
+    
+    <h3 class="sub-header">Buscar Treinador</h3>
+    <div class="row">
+        <div class="col-sm search-form card card-margin card-body p-0">
+            <form id="search-form" method='POST'>
+                <div class="row no-gutters col-14 text-center">
+                    <div class="col-md-2">
+                        <select class="form-control" id="query-category" name="query-category">
+                            <option>Nome</option>
+                            <option>ID de Treinador</option>
+                            <option>Data de Nascimento</option>
+                        </select>
+                    </div>
+                    <div class="col-md-9 p-0">
+                        <input type="text" placeholder="Buscar..." class="form-control" id="query-text" name="query-text">
+                    </div>
+                    <div class="col-md-1 p-0">
+                        <button type="submit" class="btn btn-light">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <br><br>
+
+    <h3 class="sub-header">Treinador</h3>
+    <div class="h-100">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>ID de Treinador</th>
+                        <th>Data de Nascimento</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for trainer in db %}
+                        <tr>
+                            <td>{{ trainer[0] }}</td>
+                            <td>{{ trainer[1] }}</td>
+                            <td>{{ trainer[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
