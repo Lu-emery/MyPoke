@@ -1,7 +1,7 @@
 {% extends "landing.html" %} 
 
 {% block title %}
-    Srch Poké
+    Treinador Home
 {% endblock %}
 
 {% block pkmn_collapse %}
@@ -9,39 +9,22 @@
 {% endblock %}
 
 {% block content %}
-    <h2 class="sub-header">Buscar Pokémon</h2>
-    <div class="row">
-        <div class="col-sm search-form card card-margin card-body p-0">
-            <form id="query-form" method='POST'>
-                <div class="row no-gutters col-14 text-center">
-                    <div class="col-md-2">
-                        <select class="form-control" id="query-category" name="query-category">
-                            <option>Nome</option>
-                            <option>Tipo</option>
-                            <option>Espécie</option>
-                            <option>Valor Mensal</option>
-                            <option>ID de Treinador</option>
-                            <option>Nome de Treinador</option>
-                        </select>
-                    </div>
-                    <div class="col-md-9 p-0">
-                        <input type="text" placeholder="Buscar..." class="form-control" id="query-text" name="query-text">
-                    </div>
-                    <div class="col-md-1 p-0">
-                        <button type="submit" class="btn btn-light">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <h2 class="sub-header">Página de Treinador</h2>
+    <div class="header">
+        <tbody style="text-align:left;">
+            {% for dado in treinador %}
+                <td>Nome: {{ dado[0] }}</td>
+                <br>
+                <td>Id de Treinador: {{ dado[1] }}</td>
+                <br>
+                <td>Data de Nascimento: {{ dado[2] }}</td>
+            {% endfor %}
+        </tbody>
     </div>
 
     <br><br>
 
-    <h3 class="sub-header">Pokémon</h3>
+    <h3 class="sub-header">Pokémons</h3>
     <div class="table-responsive h-100">
         <table class="table table-striped">
             <thead>
@@ -51,7 +34,6 @@
                     <th>Tipo Primário</th>
                     <th>Tipo Secundário</th>
                     <th>Custo Mensal</th>
-                    <th>Treinador</th>
                 </tr>
             </thead>
 
@@ -78,11 +60,6 @@
                             {% endif %}
                         </td>
                         <td>{{ pokemon[3] }}</td>
-                        <td>
-                            <a href={{"/trn/%s" % pokemon[7]}} title={{ "ID:%s" % pokemon[7] }}>
-                                {{ pokemon[6] }}
-                            </a>
-                        </td>
                     </tr>
                 {% endfor %}
             </tbody>

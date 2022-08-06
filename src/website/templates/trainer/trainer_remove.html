@@ -59,7 +59,10 @@
                     {% for trainer in db %}
                         <tr>
                             <td>{{ trainer[0] }}</td>
-                            <td>{{ trainer[1] }}</td>
+                            <td> <a href={{"/trn/%s" % trainer[1]}} title={{ "ID:%s" % trainer[1] }}>
+                                {{ trainer[1] }}
+                                </a>
+                            </td>
                             <td>{{ trainer[2] }}</td>
                             <td>
                                 <form method="POST">

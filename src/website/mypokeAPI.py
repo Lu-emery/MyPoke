@@ -707,6 +707,21 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
     connection.close()
     return resultado_querry
 
+def retorna_treinador(id_treinador):
+
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT nome_treinador, id_treinador, data_nascimento FROM pessoas
+                       WHERE id_treinador = """ + "'" + str(id_treinador) + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
 def pokedex():
     incluir_especie('Bulbasaur,Grama,Venenoso')
     incluir_especie('Ivysaur,Grama,Venenoso')

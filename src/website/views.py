@@ -7,6 +7,12 @@ sys.path.append("..")
 
 views = Blueprint('views', __name__)
 
+@views.route('/trn/<int:trn_id>', methods=['GET', 'POST'])
+def trn_id(trn_id):
+    db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
+    treinador = retorna_treinador (trn_id)
+    return render_template("trainer/trainer_home.html", user=current_user, db=db, treinador=treinador)
+
 @views.route('/home')
 @login_required
 def home():
