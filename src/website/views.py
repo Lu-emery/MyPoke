@@ -7,12 +7,6 @@ sys.path.append("..")
 
 views = Blueprint('views', __name__)
 
-@views.route('/trn/<int:trn_id>', methods=['GET', 'POST'])
-def trn_id(trn_id):
-    db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
-    treinador = retorna_treinador (trn_id)
-    return render_template("trainer/trainer_home.html", user=current_user, db=db, treinador=treinador)
-
 @views.route('/home')
 @login_required
 def home():
@@ -31,9 +25,10 @@ def pokemon_add():
             trn_id = request.form.get('add-id')
             cost = request.form.get('add-cost')
             species = request.form.get('add-species')
-            prim_type = request.form.get('add-type-prim')
-            sec_type = request.form.get('add-type-sec')
-            incluir_pokemon(name+","+cost+","+species+","+trn_id+","+prim_type+","+sec_type)
+            if retorna_pokemons_da_especie (species):
+                incluir_pokemon(name+","+cost+","+species+","+trn_id)
+            else:
+                flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -172,6 +167,12 @@ def trainer_add():
         
     db = retorna_tabela_pessoas()
     return render_template("trainer/trainer_add.html", user=current_user, db=db)
+
+@views.route('/trn/<int:trn_id>', methods=['GET', 'POST'])
+def trn_id(trn_id):
+    db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
+    treinador = retorna_treinador (trn_id)
+    return render_template("trainer/trainer_home.html", user=current_user, db=db, treinador=treinador)
 
 @views.route('/trn/srch', methods=['GET', 'POST'])
 def trainer_srch():
