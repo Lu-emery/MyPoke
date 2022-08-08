@@ -25,7 +25,9 @@ def pokemon_add():
             trn_id = request.form.get('add-id')
             cost = request.form.get('add-cost')
             species = request.form.get('add-species')
-            if retorna_pokemons_da_especie (species):
+            print (species)
+            print (retorna_especie(species))
+            if retorna_especie(species):
                 incluir_pokemon(name+","+cost+","+species+","+trn_id)
             else:
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")

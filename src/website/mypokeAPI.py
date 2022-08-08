@@ -633,6 +633,24 @@ def excluir_especie(especie):
     cursor.close()
     connection.close()
 
+def retorna_especie(especie):
+
+    # Acessa o banco de dados
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM especies WHERE especie = " + "'" + especie + "';")
+    resultado_querry = cursor.fetchall()
+    # Completa e commita o processo de inserção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+
 # QUERRIES AVANÇADAS
 
 def retorna_tipos_especie(especie):
