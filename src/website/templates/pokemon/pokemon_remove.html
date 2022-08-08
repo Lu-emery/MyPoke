@@ -64,19 +64,21 @@
                     <tr>
                         <td>{{ pokemon[1] }}</td>
                         <td>
-                            <!-- <img style="max-height:18px;" src={{ "/static/pokemons/%s.webp" % pokemon[2] }}> -->
-                            <a href={{ "https://bulbapedia.bulbagarden.net/wiki/%s" % pokemon[2] }}>{{ pokemon[2] }}</a>
+                            <a href={{ "https://bulbapedia.bulbagarden.net/wiki/%s" % pokemon[2] }}>
+                                <img style="max-height:27px;" src={{ "/static/pokemons/%s.png" % pokemon[2] }}>
+                                {{ pokemon[2] }}
+                            </a>
                         </td>
                         <td>
-                            <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
+                            <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
                             {{ pokemon[4] }}
-                            <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
-                        </td>   
+                            <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
+                        </td>
                         <td>
                             {% if pokemon[5] != "" %}
-                                <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
+                                <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
                                 {{ pokemon[5] }}
-                                <img style="max-height:18px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
+                                <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
                             {% else %}
                                 {{ pokemon[5] }}
                             {% endif %}
