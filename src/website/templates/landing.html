@@ -50,8 +50,8 @@
                             {% endblock %}
                                 <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
                                     <li><a href="/pkmn/srch" class="link-dark rounded">Pesquisar</a></li>
-                                    <li><a href="/pkmn/add" class="link-dark rounded">Adicionar</a></li>
                                     {% if user.is_admin %}
+                                        <li><a href="/pkmn/add" class="link-dark rounded">Adicionar</a></li>
                                         <li><a href="/pkmn/del" class="link-dark rounded">Remover</a></li>
                                         <li><a href="/pkmn/upd" class="link-dark rounded">Atualizar</a></li>
                                     {% endif %}
