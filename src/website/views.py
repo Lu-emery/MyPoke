@@ -230,9 +230,90 @@ def trainer_add():
 
 @views.route('/trn/<int:trn_id>', methods=['GET', 'POST'])
 def trn_id(trn_id):
+    if request.method == 'POST':
+        if request.form.get('add-name'):
+            # Add
+            errored = False
+            name = request.form.get('add-name')
+            trn_id = request.form.get('add-id')
+            cost = request.form.get('add-cost')
+            species = request.form.get('add-species')
+            if species and not retorna_especie(species):
+                errored = True
+                flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
+            for c in name:
+                if c in (" ", "'", '"'):
+                    errored = True
+                    flash("Nomes de pokémons não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
+            if not errored:
+                incluir_pokemon(name+","+cost+","+species+","+trn_id)
+        elif request.form.get('remove-name'):
+            # Del
+            remove_name = request.form.get('remove-name')
+            excluir_pokemon(remove_name)
+        elif request.form.get('upd-name') or request.form.get('upd-id') or request.form.get('upd-cost') or request.form.get('upd-species'):
+            # Upd
+            name = request.form.get('upd-name')
+            trn_id = request.form.get('upd-id')
+            species = request.form.get('upd-species')
+            cost = request.form.get('upd-cost')
+            
+            if species and not retorna_especie(species):
+                errored = True
+                flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
+            for c in name:
+                if c in (" ", "'", '"'):
+                    errored = True
+                    flash("Nomes de pokémons não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
+            if not errored:
+                #TODO Remover, consertar
+                if not name:
+                    name = "Vazio"
+                if not trn_id:
+                    trn_id = "Vazio"
+                if not species:
+                    species = "Vazio"
+                if not cost:
+                    cost = "Vazio"
+                print("\n\n\n")
+                print("Atualizando Nome: " + name)
+                print("Atualizando ID: " + trn_id)
+                print("Atualizando Espécie: " + species)
+                print("Atualizando Custo: " + cost)
+                print("\n\n\n")
+                
+                '''
+                old_data = selecionar_pokemon(name).pop()
+                if (trn_id == ''):
+                    trn_id = old_data[6]
+                if (species == ''):
+                    species = old_data[2]
+                if (cost == ''):
+                    cost = old_data[3]
+                atualizar_pokemon(name, cost, species, trn_id)
+                '''
+        else:
+            # Srch
+            query_category = request.form.get('query-category')
+            query_text = request.form.get('query-text')
+            if query_category == 'Nome':
+                db = selecionar_pokemon(query_text)
+            elif query_category == 'Valor Mensal':
+                db = retorna_pokemons_do_custo_mensal(query_text)
+            elif query_category == 'Tipo':
+                db = retorna_pokemons_do_tipo(query_text)
+            elif query_category == 'Espécie':
+                db = retorna_pokemons_da_especie(query_text)
+            elif query_category == 'Nome de Treinador':
+                db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
+            elif query_category == 'ID de Treinador':
+                db = retorna_pokemons_de_pessoa_id_treinador(query_text)
+            return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
+        
     db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
     treinador = retorna_treinador (trn_id)
     return render_template("trainer/trainer_home.html", user=current_user, db=db, treinador=treinador)
+
 
 @views.route('/trn/srch', methods=['GET', 'POST'])
 def trainer_srch():
