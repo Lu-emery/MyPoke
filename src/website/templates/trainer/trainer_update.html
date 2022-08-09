@@ -68,30 +68,28 @@
     <br><br>
 
     <h3 class="sub-header">Treinador</h3>
-    <div class="h-100">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>ID de Treinador</th>
-                        <th>Data de Nascimento</th>
-                    </tr>
-                </thead>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>ID de Treinador</th>
+                    <th>Data de Nascimento</th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {% for trainer in db %}
-                        <tr>
-                            <td>{{ trainer[0] }}</td>
-                            <td> <a href={{"/trn/%s" % trainer[1]}} title={{ "ID:%s" % trainer[1] }}>
-                                {{ trainer[1] }}
-                                </a>
-                            </td>
-                            <td>{{ trainer[2] }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            <tbody>
+                {% for trainer in db %}
+                    <tr>
+                        <td>{{ trainer[0] }}</td>
+                        <td> <a href={{"/trn/%s" % trainer[1]}} title={{ "ID:%s" % trainer[1] }}>
+                            {{ trainer[1] }}
+                            </a>
+                        </td>
+                        <td>{{ trainer[2] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

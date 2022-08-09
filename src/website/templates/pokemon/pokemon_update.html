@@ -48,93 +48,91 @@
     <br><br>
 
     <h3 class="sub-header">Pokémon</h3>
-    <div class="h-100">
-        <div class="table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Espécie</th>
-                        <th>Tipo Primário</th>
-                        <th>Tipo Secundário</th>
-                        <th>Custo Mensal</th>
-                        <th>Treinador</th>
-                        <th></th>
-                    </tr>
-                </thead>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Espécie</th>
+                    <th>Tipo Primário</th>
+                    <th>Tipo Secundário</th>
+                    <th>Custo Mensal</th>
+                    <th>Treinador</th>
+                    <th></th>
+                </tr>
+            </thead>
 
-                <tbody>
-                    {% for pokemon in db %}
-                    <tr>
-                        <td>{{ pokemon[1] }}</td>
-                        <td>
-                            <a href={{ "https://bulbapedia.bulbagarden.net/wiki/%s" % pokemon[2] }}>
-                                <img style="max-height:27px;" src={{ "/static/pokemons/%s.png" % pokemon[2] }}>
-                                {{ pokemon[2] }}
-                            </a>
-                        </td>
-                        <td>
-                            <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
-                            {{ pokemon[4] }}
-                            <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
-                        </td>
-                        <td>
-                            {% if pokemon[5] != "" %}
-                                <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
-                                {{ pokemon[5] }}
-                                <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
-                            {% else %}
-                                {{ pokemon[5] }}
-                            {% endif %}
-                        </td>
-                        <td>{{ pokemon[3] }}</td>
-                        <td>
-                            <a href={{"/trn/%s" % pokemon[7]}} title={{ "ID:%s" % pokemon[7] }}>
-                                {{ pokemon[6] }}
-                            </a>
-                        </td>
+            <tbody>
+                {% for pokemon in db %}
+                <tr>
+                    <td>{{ pokemon[1] }}</td>
+                    <td>
+                        <a href={{ "https://bulbapedia.bulbagarden.net/wiki/%s" % pokemon[2] }}>
+                            <img style="max-height:27px;" src={{ "/static/pokemons/%s.png" % pokemon[2] }}>
+                            {{ pokemon[2] }}
+                        </a>
+                    </td>
+                    <td>
+                        <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
+                        {{ pokemon[4] }}
+                        <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[4] }}>
+                    </td>
+                    <td>
+                        {% if pokemon[5] != "" %}
+                            <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
+                            {{ pokemon[5] }}
+                            <img style="max-height:22px;" src={{ "/static/tipos/%s.webp" % pokemon[5] }}>
+                        {% else %}
+                            {{ pokemon[5] }}
+                        {% endif %}
+                    </td>
+                    <td>{{ pokemon[3] }}</td>
+                    <td>
+                        <a href={{"/trn/%s" % pokemon[7]}} title={{ "ID:%s" % pokemon[7] }}>
+                            {{ pokemon[6] }}
+                        </a>
+                    </td>
 
-                        <td>
-                            <button type="button" id="modal-btn" onclick="preencheNome()" class="btn btn-outline-primary h-11 w-12 py-1 px-2" data-bs-toggle="modal" data-bs-target="#atualizaModal" data-bs-name={{"%s" % pokemon[1]}}>   
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 18 18">
-                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
-                                </svg>
-                            </button>   
+                    <td>
+                        <button type="button" id="modal-btn" onclick="preencheNome()" class="btn btn-outline-primary h-11 w-12 py-1 px-2" data-bs-toggle="modal" data-bs-target="#atualizaModal" data-bs-name={{"%s" % pokemon[1]}}>   
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 18 18">
+                                <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
+                            </svg>
+                        </button>   
 
-                            <div class="modal fade" id="atualizaModal" tabindex="-1" aria-labelledby="atualizaModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <form id="upd-form" method="POST">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="atualizaModalLabel">Atualizar</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <div class="modal fade" id="atualizaModal" tabindex="-1" aria-labelledby="atualizaModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <form id="upd-form" method="POST">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="atualizaModalLabel">Atualizar</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body row g-2">
+                                            <div class="form-floating col-12">
+                                                <input type="text" class="form-control" id="upd-id" name="upd-id" placeholder="ID de Treinador">
+                                                <label for="floatingInput">ID de Treinador</label>
                                             </div>
-                                            <div class="modal-body row g-2">
-                                                <div class="form-floating col-12">
-                                                    <input type="text" class="form-control" id="upd-id" name="upd-id" placeholder="ID de Treinador">
-                                                    <label for="floatingInput">ID de Treinador</label>
-                                                </div>
-                                                <div class="form-floating col-7">
-                                                    <input type="text" class="form-control" id="upd-species" name="upd-species" placeholder="Espécie">
-                                                    <label for="floatingInput">Espécie</label>
-                                                </div>
-                                                <div class="form-floating col-5">
-                                                    <input type="text" class="form-control" id="upd-cost" name="upd-cost" placeholder="Custo Mensal">
-                                                    <label for="floatingInput">Custo Mensal</label>
-                                                </div>
+                                            <div class="form-floating col-7">
+                                                <input type="text" class="form-control" id="upd-species" name="upd-species" placeholder="Espécie">
+                                                <label for="floatingInput">Espécie</label>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn btn-primary">Save changes</button>
+                                            <div class="form-floating col-5">
+                                                <input type="text" class="form-control" id="upd-cost" name="upd-cost" placeholder="Custo Mensal">
+                                                <label for="floatingInput">Custo Mensal</label>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                            </div>  
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>  
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </div>
 {% endblock %}

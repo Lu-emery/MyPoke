@@ -75,7 +75,7 @@ def pokemon_srch():
             trn_id = request.form.get('upd-id')
             species = request.form.get('upd-species')
             cost = request.form.get('upd-cost')
-            
+            errored = False
             if species and not retorna_especie(species):
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
@@ -84,35 +84,18 @@ def pokemon_srch():
                     errored = True
                     flash("Nomes de pokémons não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
             if not errored:
-                #TODO Remover, consertar
-                if not name:
-                    name = "Vazio"
-                if not trn_id:
-                    trn_id = "Vazio"
-                if not species:
-                    species = "Vazio"
-                if not cost:
-                    cost = "Vazio"
-                print("\n\n\n")
-                print("Atualizando Nome: " + name)
-                print("Atualizando ID: " + trn_id)
-                print("Atualizando Espécie: " + species)
-                print("Atualizando Custo: " + cost)
-                print("\n\n\n")
-                
-                '''
                 old_data = selecionar_pokemon(name).pop()
+                print("Old"+str(old_data))
                 if (trn_id == ''):
-                    trn_id = old_data[6]
+                    trn_id = old_data[7]
                 if (species == ''):
                     species = old_data[2]
                 if (cost == ''):
                     cost = old_data[3]
+                print("Att"+str([name, cost, species, trn_id]))
                 atualizar_pokemon(name, cost, species, trn_id)
-                '''
         else:
             # Srch
-            print("SEARCHING........")
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
@@ -487,32 +470,29 @@ def cria_graficos(db):
             else:
                 tipos['keys'].append(sec_type)
                 tipos['values'].append(1)
-                
-    print(especies)
-    print(tipos)
     
     especies['keys'] = [x for _, x in sorted(zip(especies['values'], especies['keys']), key=lambda pair: pair[0])]
     especies['values'] = sorted(especies['values'])
     tipos['keys'] = [x for _, x in sorted(zip(tipos['values'], tipos['keys']), key=lambda pair: pair[0])]
     tipos['values'] = sorted(tipos['values'])
 
-    
     species_colors = plt.get_cmap('cool')(np.linspace(0.2, 0.7, len(especies['keys'])))
     
-    plt.pie(np.array(especies['values']), labels=np.array(especies['keys']), colors = species_colors, autopct=make_autopct_especie(especies['values']), startangle=90)
-    plt.savefig("website/static/species_graph.png")
-    plt.close()
+    fig1, ax1 = plt.subplots()
+    ax1.pie(np.array(especies['values']), labels=np.array(especies['keys']), colors = species_colors, autopct=make_autopct_especie(especies['values']), startangle=90)
+    fig1.savefig("website/static/species_graph.png")
     
-    plt.pie(np.array(tipos['values']), labels=np.array(tipos['keys']), colors = species_colors, autopct = make_autopct_tipos(tipos['values'], len(db)), startangle=90)
-    plt.savefig("website/static/types_graph.png")
-    plt.close()
-
+    fig2, ax2 = plt.subplots()
+    ax2.pie(np.array(tipos['values']), labels=np.array(tipos['keys']), colors = species_colors, autopct = make_autopct_tipos(tipos['values'], len(db)), startangle=90)
+    fig2.savefig("website/static/types_graph.png")
+    
 def make_autopct_especie(values):
     def my_autopct(pct):
         total = sum(values)
         val = int(round(pct*total/100.0))
-        if val == 1:
-            return f'({val})'
+        if total > 5:
+            if val == 1:
+                return f'({val})'
         return f'{pct:.2f}%  ({val})'
     return my_autopct
     
@@ -521,7 +501,8 @@ def make_autopct_tipos(values, size):
         total = sum(values)
         val = int(round(pct*total/100.0))
         pct = val/size*100
-        if val == 1:
-            return f'({val})'
+        if total > 5:
+            if val == 1:
+                return f'({val})'
         return f'{pct:.2f}%  ({val})'
     return my_autopct

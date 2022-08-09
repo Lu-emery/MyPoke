@@ -394,8 +394,9 @@ def selecionar_pokemon(nome):
                         custo_mensal,
                         tipo_primario,
                         tipo_secundario,
+                        nome_treinador,
                         id_treinador 
-                        FROM pokemons NATURAL JOIN especies
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                         WHERE nome_pokemon = """ + "'" + nome + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
