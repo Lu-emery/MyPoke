@@ -128,7 +128,7 @@
         </table>
     </div>
 
-    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+    <div class="d-grid justify-content-md-end">
         <button type="button" id="modal-btn" class="btn btn-outline-primary h-11 w-12 py-1 px-2" data-bs-toggle="modal" data-bs-target="#adicionaModal" {% if not ((session['username'] == treinador[0][1]) or user.is_admin) %} disabled {% endif %}>   
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                 <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"></path>
@@ -137,7 +137,7 @@
     
         <div class="modal fade" id="adicionaModal" tabindex="-1" aria-labelledby="adicionaModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <form id="upd-form" method="POST">
+                <form id="add-form" method="POST">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="adicionaModalLabel">Adicionar Pokémon ao Treinador {{treinador[0][0]}}</h5>

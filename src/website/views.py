@@ -2,6 +2,8 @@ from unicodedata import category
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from .mypokeAPI import *
+import matplotlib.pyplot as plt
+import numpy as np
 import sys
 sys.path.append("..")
 
@@ -26,9 +28,12 @@ def pokemon_add():
             trn_id = request.form.get('add-id')
             cost = request.form.get('add-cost')
             species = request.form.get('add-species')
-            if species and not retorna_especie(species):
+            if not retorna_especie(species):
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
+            if not retorna_treinador(trn_id):
+                errored = True
+                flash("Favor inserir um ID de treinador válido", category="ERROR")
             for c in name:
                 if c in (" ", "'", '"'):
                     errored = True
@@ -57,7 +62,8 @@ def pokemon_add():
     return render_template("pokemon/pokemon_add.html", user=current_user, db=db)
 
 @views.route('/pkmn/srch', methods=['GET', 'POST'])
-def pokemon_srch():
+def pokemon_srch(): 
+    db = None
     if request.method == 'POST':
         if request.form.get('remove-name') != None:
             # Del
@@ -106,6 +112,7 @@ def pokemon_srch():
                 '''
         else:
             # Srch
+            print("SEARCHING........")
             query_category = request.form.get('query-category')
             query_text = request.form.get('query-text')
             if query_category == 'Nome':
@@ -120,9 +127,12 @@ def pokemon_srch():
                 db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
-            return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
-            
-    db = retorna_tabela_pokemons()
+
+    if not db:
+        db = retorna_tabela_pokemons()
+        
+    cria_graficos(db)
+    
     return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
     
 
@@ -230,6 +240,7 @@ def trainer_add():
 
 @views.route('/trn/<int:trn_id>', methods=['GET', 'POST'])
 def trn_id(trn_id):
+    db = None
     if request.method == 'POST':
         if request.form.get('add-name'):
             # Add
@@ -308,10 +319,13 @@ def trn_id(trn_id):
                 db = retorna_pokemons_de_pessoa_nome_treinador(query_text)
             elif query_category == 'ID de Treinador':
                 db = retorna_pokemons_de_pessoa_id_treinador(query_text)
-            return render_template("pokemon/pokemon_query.html", user=current_user, db=db)
         
-    db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
+    if not db:
+        db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
     treinador = retorna_treinador (trn_id)
+    
+    cria_graficos(db)
+    
     return render_template("trainer/trainer_home.html", user=current_user, db=db, treinador=treinador)
 
 
@@ -439,3 +453,75 @@ def converte_birthday(old_birthday):
         birthday += "/"
     birthday = birthday[:-1]
     return birthday
+
+def cria_graficos(db):
+    especies = {"keys": [],"values": []}
+    tipos = {"keys": [],"values": []}
+    
+    for pokemon in db:
+        
+        species = pokemon[2]
+        prim_type = pokemon[4]
+        sec_type = None
+        if pokemon[5] != "":
+            sec_type = pokemon[5]
+            
+        if species in especies['keys']:
+            i = especies['keys'].index(species)
+            especies['values'][i] += 1
+        else:
+            especies['keys'].append(species)
+            especies['values'].append(1)
+            
+        if prim_type in tipos['keys']:
+            i = tipos['keys'].index(prim_type)
+            tipos['values'][i] += 1
+        else:
+            tipos['keys'].append(prim_type)
+            tipos['values'].append(1)
+            
+        if sec_type:
+            if sec_type in tipos['keys']:
+                i = tipos['keys'].index(sec_type)
+                tipos['values'][i] += 1
+            else:
+                tipos['keys'].append(sec_type)
+                tipos['values'].append(1)
+                
+    print(especies)
+    print(tipos)
+    
+    especies['keys'] = [x for _, x in sorted(zip(especies['values'], especies['keys']), key=lambda pair: pair[0])]
+    especies['values'] = sorted(especies['values'])
+    tipos['keys'] = [x for _, x in sorted(zip(tipos['values'], tipos['keys']), key=lambda pair: pair[0])]
+    tipos['values'] = sorted(tipos['values'])
+
+    
+    species_colors = plt.get_cmap('cool')(np.linspace(0.2, 0.7, len(especies['keys'])))
+    
+    plt.pie(np.array(especies['values']), labels=np.array(especies['keys']), colors = species_colors, autopct=make_autopct_especie(especies['values']), startangle=90)
+    plt.savefig("website/static/species_graph.png")
+    plt.close()
+    
+    plt.pie(np.array(tipos['values']), labels=np.array(tipos['keys']), colors = species_colors, autopct = make_autopct_tipos(tipos['values'], len(db)), startangle=90)
+    plt.savefig("website/static/types_graph.png")
+    plt.close()
+
+def make_autopct_especie(values):
+    def my_autopct(pct):
+        total = sum(values)
+        val = int(round(pct*total/100.0))
+        if val == 1:
+            return f'({val})'
+        return f'{pct:.2f}%  ({val})'
+    return my_autopct
+    
+def make_autopct_tipos(values, size):
+    def my_autopct(pct):
+        total = sum(values)
+        val = int(round(pct*total/100.0))
+        pct = val/size*100
+        if val == 1:
+            return f'({val})'
+        return f'{pct:.2f}%  ({val})'
+    return my_autopct

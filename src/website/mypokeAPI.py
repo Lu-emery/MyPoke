@@ -757,6 +757,8 @@ def corrige_nome(especie):
         return "Nidoran♂"
     if especie == "Nidoran(f)" or especie == "Nidoran (f)":
         return "Nidoran♀"
+    else:
+        return especie
 
 def pokedex():
     incluir_especie('Bulbasaur,Grama,Venenoso')
