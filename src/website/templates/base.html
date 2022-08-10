@@ -6,7 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         
         <meta name="description" content="">
-        <meta name="author" content="Luemery">
+        <meta name="author" content="Luemery, Thiago">
 
         <title>{% block title %}???{% endblock %}</title>
 
@@ -24,7 +24,7 @@
                 </a>
                 <ul class="navbar-nav me-auto mb-2 mb-md-0 flex-row-reverse">
                     <li class="nav-item">
-                        {% block home_btn %}<a class="nav-link active" aria-current="page" href="/home">Home</a>{% endblock %}
+                        {% block home_btn %}<a class="nav-link active" aria-current="page" href="/">Home</a>{% endblock %}
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/help">Help</a>
@@ -34,7 +34,11 @@
                     <li class="nav-item">
                         <a class="navbar-brand">{% block name %}{% endblock %}</a>
                     </li>
-                    {% block name_link %}{% endblock %}
+                    {% block name_link %}
+                        <a class="navbar-text" href="/">
+                            Login
+                        </a>
+                    {% endblock %}
                 </form>
             </div>
         </nav>

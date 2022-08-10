@@ -1,11 +1,12 @@
-{% extends "landing.html" %} 
+{% extends "base.html" %}
 
 {% block title %}
     Help
 {% endblock %}
 
-{% block content %}
-    <pre class="center-text m-0 p-0 row no-gutters overflow-auto">
+{% block main %}
+<div class="container-fluid main vh-90 overflow-scroll" style="padding-bottom:100px;">
+    <pre class="m-0 p-0 row no-gutters text-center">
         <h1>Help!</h1>
         <p>I need somebody</p>
         <h5>Help!</h5>
@@ -51,4 +52,5 @@ Help me get my feet back on the ground
 Won't you please, please help me, help me, help me, ooh
         </p>
     </pre>
+</div>
 {% endblock %}

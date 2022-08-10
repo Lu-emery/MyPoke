@@ -39,13 +39,17 @@
     <br><br>
 
     <h3 class="sub-header">Treinador</h3>
-    <div class="table-responsive h-100">
+    <div class="table-responsive">
         <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Nome</th>
                     <th>ID de Treinador</th>
                     <th>Data de Nascimento</th>
+                    {% if user.is_admin %}
+                        <th />
+                        <th />
+                    {% endif %}
                 </tr>
             </thead>
 
@@ -58,9 +62,74 @@
                             </a>
                         </td>
                         <td>{{ trainer[2] }}</td>
+                        {% if user.is_admin %}
+                            <td>
+                                <form method="POST">
+                                    <input type="hidden" name="remove-id" value={{ "%s" % trainer[1]}}>
+                                    <button type="submit" class="btn btn-outline-primary h-11 w-12 py-1 px-2">   
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                                        </svg>
+                                    </button>   
+                                </form>
+                            </td>
+
+                            <td>
+                                <button type="button" id="upd-btn" onclick={{"preencheNome('%s')" % trainer[1]}} class="btn btn-outline-primary h-11 w-12 py-1 px-2" data-bs-toggle="modal" data-bs-target="#atualizaModal">   
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 18 18">
+                                        <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"></path>
+                                    </svg>
+                                </button>   
+    
+                                <div class="modal fade" id="atualizaModal" tabindex="-1" aria-labelledby="atualizaModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form id="upd-form" method="POST">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="atualizaModalLabel">Atualizar</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body row g-2">
+                                                    <input type="hidden" id="upd-id" name="upd-id" placeholder="123123123" value="000000000">
+                                                    <div class="form-floating col-6">
+                                                        <input type="text" class="form-control" id="upd-id-fake" name="upd-id-fake" placeholder="123456789" value="000000000" disabled>
+                                                        <label for="floatingInput">ID</label>
+                                                    </div>
+                                                    <div class="form-floating col-6">
+                                                        <input type="date" class="form-control" id="upd-date" name="upd-date" placeholder="Nascimento">
+                                                        <label for="floatingInput">Nascimento</label>
+                                                    </div>
+                                                    <div class="form-floating col-12">
+                                                        <input type="text" class="form-control" id="upd-name" name="upd-name" placeholder="Nome">
+                                                        <label for="floatingInput">Nome</label>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="submit" class="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>  
+                            </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
+{% endblock %}
+
+
+{% block script %}
+<script>
+function preencheNome(id){
+    form_id_hidden = document.getElementById("upd-id")
+    form_id_fake = document.getElementById("upd-id-fake")
+
+    form_id_hidden.value = id
+    form_id_fake.value = id
+}
+</script>
 {% endblock %}
