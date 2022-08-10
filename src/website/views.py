@@ -23,11 +23,14 @@ def pokemon_add():
     if request.method == 'POST':
         if request.form.get('query-category') == None:
             # Add
-            errored = False
             name = request.form.get('add-name')
             trn_id = request.form.get('add-id')
             cost = request.form.get('add-cost')
             species = request.form.get('add-species')
+            errored = False
+            if not name or not trn_id or not cost or not species:
+                errored = True
+                flash("Para adicionar um pokémon, favor preencher todos os campos.", category="ERROR")
             if not retorna_especie(species):
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
@@ -79,20 +82,21 @@ def pokemon_srch():
             if species and not retorna_especie(species):
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
+            if trn_id and not retorna_treinador(trn_id):
+                errored = True
+                flash("Favor inserir um ID de treinador válido", category="ERROR")
             for c in name:
                 if c in (" ", "'", '"'):
                     errored = True
                     flash("Nomes de pokémons não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
             if not errored:
                 old_data = selecionar_pokemon(name).pop()
-                print("Old"+str(old_data))
                 if (trn_id == ''):
                     trn_id = old_data[7]
                 if (species == ''):
                     species = old_data[2]
                 if (cost == ''):
                     cost = old_data[3]
-                print("Att"+str([name, cost, species, trn_id]))
                 atualizar_pokemon(name, cost, species, trn_id)
         else:
             # Srch
@@ -152,24 +156,25 @@ def pokemon_upd():
         if request.form.get('query-category') == None:
             # Upd
             name = request.form.get('upd-name')
-            if name == "":
-                flash("Por favor insira o nome do pokémon a ser atualizado.", category="ERROR")
-            else:
-                trn_id = request.form.get('upd-id')
-                species = request.form.get('upd-species')
-                cost = request.form.get('upd-cost')
-                if species and not retorna_especie(species):
-                    errored = True
-                    flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
-                if not errored:        
-                    old_data = selecionar_pokemon(name).pop()
-                    if (trn_id == ''):
-                        trn_id = old_data[6]
-                    if (species == ''):
-                        species = old_data[2]
-                    if (cost == ''):
-                        cost = old_data[3]
-                    atualizar_pokemon(name, cost, species, trn_id)
+            trn_id = request.form.get('upd-id')
+            species = request.form.get('upd-species')
+            cost = request.form.get('upd-cost')
+            errored = False
+            if species and not retorna_especie(species):
+                errored = True
+                flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
+            if trn_id and not retorna_treinador(trn_id):
+                errored = True
+                flash("Favor inserir um ID de treinador válido", category="ERROR")
+            if not errored:        
+                old_data = selecionar_pokemon(name).pop()
+                if (trn_id == ''):
+                    trn_id = old_data[7]
+                if (species == ''):
+                    species = old_data[2]
+                if (cost == ''):
+                    cost = old_data[3]
+                atualizar_pokemon(name, cost, species, trn_id)
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -199,6 +204,13 @@ def trainer_add():
             name = request.form.get('add-name')
             trn_id = request.form.get('add-id')
             birthday = converte_birthday(request.form.get('add-date'))
+            errored = False
+            if not name or not trn_id or not birthday:
+                errored = True
+                flash("Para adicionar um treinador, favor preencher todos os campos.", category="ERROR")
+            if selecionar_pessoa(trn_id):
+                errored = True
+                flash("IDs de treinador devem ser únicos, e esse já está sendo usado.", category="ERROR")
             for c in name:
                 if c in (" ", "'", '"'):
                     errored = True
@@ -227,11 +239,14 @@ def trn_id(trn_id):
     if request.method == 'POST':
         if request.form.get('add-name'):
             # Add
-            errored = False
             name = request.form.get('add-name')
             trn_id = request.form.get('add-id')
             cost = request.form.get('add-cost')
             species = request.form.get('add-species')
+            errored = False
+            if not name or not trn_id or not cost or not species:
+                errored = True
+                flash("Para adicionar um pokémon, favor preencher todos os campos.", category="ERROR")
             if species and not retorna_especie(species):
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
@@ -251,41 +266,26 @@ def trn_id(trn_id):
             trn_id = request.form.get('upd-id')
             species = request.form.get('upd-species')
             cost = request.form.get('upd-cost')
-            
+            errored = False
             if species and not retorna_especie(species):
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
+            if trn_id and not retorna_treinador(trn_id):
+                errored = True
+                flash("Favor inserir um ID de treinador válido", category="ERROR")
             for c in name:
                 if c in (" ", "'", '"'):
                     errored = True
                     flash("Nomes de pokémons não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
             if not errored:
-                #TODO Remover, consertar
-                if not name:
-                    name = "Vazio"
-                if not trn_id:
-                    trn_id = "Vazio"
-                if not species:
-                    species = "Vazio"
-                if not cost:
-                    cost = "Vazio"
-                print("\n\n\n")
-                print("Atualizando Nome: " + name)
-                print("Atualizando ID: " + trn_id)
-                print("Atualizando Espécie: " + species)
-                print("Atualizando Custo: " + cost)
-                print("\n\n\n")
-                
-                '''
                 old_data = selecionar_pokemon(name).pop()
                 if (trn_id == ''):
-                    trn_id = old_data[6]
+                    trn_id = old_data[7]
                 if (species == ''):
                     species = old_data[2]
                 if (cost == ''):
                     cost = old_data[3]
                 atualizar_pokemon(name, cost, species, trn_id)
-                '''
         else:
             # Srch
             query_category = request.form.get('query-category')
@@ -319,38 +319,23 @@ def trainer_srch():
             # Del
             remove_id = request.form.get('remove-id')
             excluir_pessoa(remove_id)
-        elif request.form.get('upd-name') or request.form.get('upd-date'):
+        elif request.form.get('upd-id'):
             # Upd
             trn_id = request.form.get('upd-id')
             name = request.form.get('upd-name')
             birthday = converte_birthday(request.form.get('upd-date'))
+            errored = False
             for c in name:
                 if c in (" ", "'", '"'):
                     errored = True
                     flash("Nomes de treinadores não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
             if not errored:    
-                #TODO Remover, consertar
-                if not trn_id:
-                    trn_id = "Vazio"
-                if not name:
-                    name = "Vazio"
-                if not birthday:
-                    birthday = "Vazio"
-                print("\n\n\n")
-                print("Atualizando ID: " + trn_id)
-                print("Atualizando Nome: " + name)
-                print("Atualizando Aniversário: " + birthday)
-                print("\n\n\n")
-                pass
-                
-                '''
                 old_data = selecionar_pessoa(trn_id).pop()
                 if name == "":
                     name = old_data[0]
                 if birthday == "":
                     birthday = old_data[2]
-                atualizar_pessoa(trn_id, name, birthday)   
-                '''
+                atualizar_pessoa(trn_id, name, birthday)
         else:
             # Query
             query_category = request.form.get('query-category')
@@ -395,22 +380,20 @@ def trainer_upd():
         if request.form.get('query-category') == None:
             # Upd
             trn_id = request.form.get('upd-id')
-            if trn_id == "":
-                flash("Por favor insira o ID do treinador a ser atualizado.", category="ERROR")
-            else:
-                name = request.form.get('upd-name')
-                birthday = converte_birthday(request.form.get('upd-date'))
-                for c in name:
-                    if c in (" ", "'", '"'):
-                        errored = True
-                        flash("Nomes de treinadores não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
-                if not errored:        
-                    old_data = selecionar_pessoa(trn_id).pop()
-                    if name == "":
-                        name = old_data[0]
-                    if birthday == "":
-                        birthday = old_data[2]
-                    atualizar_pessoa(trn_id, name, birthday)            
+            name = request.form.get('upd-name')
+            birthday = converte_birthday(request.form.get('upd-date'))
+            errored = False
+            for c in name:
+                if c in (" ", "'", '"'):
+                    errored = True
+                    flash("Nomes de treinadores não podem conter espaços ou aspas, favor inserir um nome válido", category="ERROR")
+            if not errored:        
+                old_data = selecionar_pessoa(trn_id).pop()
+                if name == "":
+                    name = old_data[0]
+                if birthday == "":
+                    birthday = old_data[2]
+                atualizar_pessoa(trn_id, name, birthday)            
         else:
             # Query
             query_category = request.form.get('query-category')
