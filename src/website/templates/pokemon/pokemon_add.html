@@ -10,38 +10,10 @@
 
 {% block content %}
     <h2 class="sub-header">Adicionar Pokémon</h2>
-                
-    <div class="container-md">
-        <form class="row g-3" id="add-form" method='POST'>
-            <div class="form-floating col-8">
-                <input type="text" class="form-control" id="add-name" name="add-name" placeholder="Nome">
-                <label for="floatingInput">Nome</label>
-            </div>
-            <div class="form-floating col-4">
-                <input type="text" class="form-control" id="add-id" name="add-id" placeholder="ID de Treinador">
-                <label for="floatingInput">ID de Treinador</label>
-            </div>
-            <div class="form-floating col-md-8">
-                <input type="text" class="form-control" id="add-species" name="add-species" placeholder="Espécie">
-                <label for="floatingInput">Espécie</label>
-            </div>
-            <div class="form-floating col-4">
-                <input type="text" class="form-control" id="add-cost" name="add-cost" placeholder="Custo Mensal">
-                <label for="floatingInput">Custo Mensal</label>
-            </div>
-            <button type="submit" class="btn btn-primary mt-2" style="float:right;" >
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send" viewBox="0 0 16 16">
-                    <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576 6.636 10.07Zm6.787-8.201L1.591 6.602l4.339 2.76 7.494-7.493Z"/>
-                </svg>
-                Adicionar
-            </button>
-        </form>
-    </div>
 
+    <br>
 
-    <br><br>
-
-    <h3 class="sub-header">Buscar Pokémon</h3>
+    <h3 class="sub-header">Buscar</h3>
     <div class="container-md">
         <div class="row g-3 p-8">
             <div class="col-sm search-form card card-margin card-body p-1">
@@ -122,5 +94,47 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+    
+    <div class="d-grid justify-content-md-end">
+        <button type="button" id="modal-btn" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#adicionaModal">   
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"></path>
+            </svg>
+        </button>   
+    
+        <div class="modal fade" id="adicionaModal" tabindex="-1" aria-labelledby="adicionaModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <form id="add-form" method="POST">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="adicionaModalLabel">Adicionar Pokémon</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body row g-2">
+                            <div class="form-floating col-8">
+                                <input type="text" class="form-control" id="add-name" name="add-name" placeholder="ID de Treinador">
+                                <label for="floatingInput">Nome</label>
+                            </div>
+                            <div class="form-floating col-4">
+                                <input type="text" class="form-control" id="add-id" name="add-id" placeholder="123456789">
+                                <label for="floatingInput">ID de Treinador</label>
+                            </div>
+                            <div class="form-floating col-7">
+                                <input type="text" class="form-control" id="add-species" name="add-species" placeholder="Espécie">
+                                <label for="floatingInput">Espécie</label>
+                            </div>
+                            <div class="form-floating col-5">
+                                <input type="text" class="form-control" id="add-cost" name="add-cost" placeholder="Custo Mensal">
+                                <label for="floatingInput">Custo Mensal</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Adicionar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}

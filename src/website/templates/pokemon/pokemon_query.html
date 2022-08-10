@@ -43,12 +43,14 @@
 
     <br><br>
 
-    <div class="container-md">
-        <div class="d-grid gap-2 d-flex justify-content-center">
-            <img src="../../static/species_graph.png" style="width:45%">
-            <img src="../../static/types_graph.png" style="width:45%">
+    {% if db %}
+        <div class="container-md">
+            <div class="d-grid gap-2 d-flex justify-content-center">
+                <img src="../../static/species_graph.png" style="width:45%">
+                <img src="../../static/types_graph.png" style="width:45%">
+            </div>
         </div>
-    </div>
+    {% endif %}
 
     <br>
 
@@ -70,6 +72,20 @@
                 </tr>
             </thead>
 
+            {% if not db %}
+            <tbody>
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+                <td />
+                {% if user.is_admin %}
+                    <td />
+                    <td />
+                {% endif %}
+            </tbody>
+            {% else %}
             <tbody>
                 {% for pokemon in db %}
                     <tr>
@@ -159,6 +175,7 @@
                     </tr>
                 {% endfor %}
             </tbody>
+            {% endif %}
         </table>
     </div>
 {% endblock %}

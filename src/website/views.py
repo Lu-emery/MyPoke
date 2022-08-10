@@ -208,6 +208,9 @@ def trainer_add():
             if not name or not trn_id or not birthday:
                 errored = True
                 flash("Para adicionar um treinador, favor preencher todos os campos.", category="ERROR")
+            if trn_id[0] == "0":
+                errored = True
+                flash("O primeiro caracter do ID do treinador não pode ser 0.", category="ERROR")
             if selecionar_pessoa(trn_id):
                 errored = True
                 flash("IDs de treinador devem ser únicos, e esse já está sendo usado.", category="ERROR")
