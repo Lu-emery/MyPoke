@@ -1,3 +1,13 @@
+#####################################################################
+# models.py - arquivo de declaração do banco de dados de usuários
+#
+# Contribuidores: Lucas Emery
+#                 Thiago Damasceno
+#
+# Funcionalidade:
+#   Esse arquivo declara o formato do banco de dados users.db
+#####################################################################
+
 from . import db
 from flask_login import UserMixin
 

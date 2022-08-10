@@ -1,6 +1,6 @@
 #####################################################################
 # myPokeAPI.py - API de manutenção do banco de dados myPoké
-# Versão: 0.8.1
+# Versão: 1.1.1
 #
 # Contribuidores: Lucas Emery
 #                 Thiago Damasceno
@@ -22,23 +22,13 @@
 #   0.7.1: Implementação de Querries avançadas
 #   0.8.0 Implementação da tabela "Espécies"
 #   0.8.1 Hotfix nas funções de retorno de tabela
-#
-#####################################################################
-#
-# TODO:
-#   Tratamento de erros
-#       Inserção de instâncias com as mesmas chaves primárias
-#   
-#   Teste de funcionalidade
-#       Deleção, reinicialização
-#       Atualização de pessoa
-#
-#   Adição de funcionalidade
-#       Funções de busca (pessoa e pokémon)
-#       Atualização de pokémon
+#   1.0 Finalização da implementação das funções
+#   1.1 Atualização das funções para o novo formato de visualização no front-end
+#   1.1.1 Documentação final
 #
 #####################################################################
 
+# Dados usados para o acesso inicial ao sistema, para criar o banco de dados no postgres
 USER='postgres'
 PASSWORD='admin'
 HOST='localhost'
@@ -48,15 +38,19 @@ PORT='5432'
 from pydoc import doc
 import psycopg2
 
+# criar_base_de_dados()
+#   cria a base de dados mypoke e as suas respectivas tabelas
 def criar_base_de_dados():
     connection = psycopg2.connect(database ='postgres', user=USER, password=PASSWORD, host=HOST, port=PORT)#(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     connection.autocommit = True
     cursor = connection.cursor()
 
+    # Cria a base de dados mypoke
     cursor.execute ('CREATE DATABASE mypoke;')
     print('Base de dados mypoke criada com sucesso!')
-    # Completa e commita o processo de remoção
     connection.commit()
+    
+    # Cria as tabelas internas
     criar_tabela_pessoas()
     criar_tabela_especies()
     criar_tabela_pokemons()
@@ -66,51 +60,61 @@ def criar_base_de_dados():
     cursor.close()
     connection.close()
 
+# deletar_base_de_dados()
+#   deleta a base de dados mypoke e as suas respectivas tabelas
 def deletar_base_de_dados():
     connection = psycopg2.connect(database = 'postgres', user=USER, password=PASSWORD, host=HOST, port= PORT)
     connection.autocommit = True
     cursor = connection.cursor()
 
+    # Deleta as tabelas internas
     deletar_tabela_pessoas()
     deletar_tabela_especies()
     deletar_tabela_pokemons()
     connection.commit()
 
+    # Deleta a base de dados
     cursor.execute ('DROP DATABASE mypoke;')    
     print('Base de dados mypoke excluída com sucesso!')
-    # Completa e commita o processo de remoção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     
+# inicializar_mypoke()
+#   cria a base de dados, contém alguns comandos de teste
 def inicializar_mypoke():
     connection = psycopg2.connect(database = 'postgres', user=USER, password=PASSWORD, host=HOST, port= PORT)
     connection.autocommit = True
     cursor = connection.cursor()
     
+    # Verifica se o banco de dados já existe
     cursor.execute('SELECT datname FROM pg_database')
     list_db = cursor.fetchall()
     connection.commit()
     
     if ('mypoke',) in list_db:
-        deletar_base_de_dados()
-    criar_base_de_dados()
+        # comando de teste
+        # deletar_base_de_dados()
+        pass
+    else:
+        # Caso não exista, cria o banco de dados no postgres e popula a tabela espécies
+        criar_base_de_dados()
+        pokedex()
+    
+    # comando de teste
+    # Popula o banco de dados com os dados de exemplo
     popular_bd()
     
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
 
 # criar_tabela_pessoas()
-#   Cria uma tabela vazia de pessoas
-#   Entrada: nenhuma
-#   Saída: nenhuma
+#   cria uma tabela vazia de pessoas
 def criar_tabela_pessoas():
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
@@ -120,88 +124,74 @@ def criar_tabela_pessoas():
                         nome_treinador VARCHAR,
                         id_treinador VARCHAR PRIMARY KEY,
                         data_nascimento VARCHAR);""")
-    # Finaliza e comita a criação de tabela
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     
-# criar_tabela_pokemons()
-#   Cria uma tabela vazia de pokemons
-#   Entrada: nenhuma
-#   Saída: nenhuma
+# criar_tabela_pokémons()
+#   cria uma tabela vazia de pokémons
 def criar_tabela_pokemons():
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    # Executa o comando CREATE do postgresql, caso a tabela pokemons ainda não exista
-    #   define os parâmetros de pokemon como 'nome, custo_mensal, especie,
-    #                                         tipo_primario, tipo_secundario,
-    #                                         id_treinador'
+    # Executa o comando CREATE do postgresql, caso a tabela pokémons ainda não exista
+    #   define os parâmetros de pokémon como 'nome, especie, custo_mensal, id_treinador'
     cursor.execute ("""CREATE TABLE IF NOT EXISTS pokemons (
                         id_pokemon SERIAL PRIMARY KEY,
                         nome_pokemon VARCHAR,
                         especie VARCHAR,
                         custo_mensal DOUBLE PRECISION,
                         id_treinador VARCHAR REFERENCES pessoas (id_treinador));""")
-    # Finaliza e comita a criação de tabela
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
+# criar_tabela_especies()
+#   cria uma tabela vazia de espécies
 def criar_tabela_especies():
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Executa o comando CREATE do postgresql, caso a tabela de espécies ainda não exista
+    #   define os parâmetros de espécie como 'espécie, tipo_primario, tipo_secundario'
     cursor.execute ("""CREATE TABLE IF NOT EXISTS especies (
                         especie VARCHAR PRIMARY KEY,
                         tipo_primario VARCHAR,
                         tipo_secundario VARCHAR);""")
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     
 # deletar_tabela_pessoas()
-#   Deleta a tabela de pessoas e a tabela de pokémons associada
+#   deleta a tabela de pessoas e a tabela de pokémons associada
 #       isso se dá porque a existência de uma tabela de pokémons
 #       requer uma tabela de treinadores
-#   Entrada: nenhuma
-#   Saída: nenhuma
 def deletar_tabela_pessoas():
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
     # Executa o comando DROP TABLE para ambas as tabelas, caso existam
     cursor.execute ("""DROP TABLE IF EXISTS pessoas CASCADE;""")
-    # Finaliza e comita a deleção das tabelas
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
+# deletar_tabela_especies()
+#   deleta a tabela de espécies
 def deletar_tabela_especies():
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
     # Executa o comando DROP TABLE para a tabela espécies, caso exista
     cursor.execute ("""DROP TABLE IF EXISTS especie CASCADE;""")
-    # Finaliza e comita a deleção da tabela
     connection.commit()
 
     # Encerra a conexão com o banco de dados
@@ -210,19 +200,12 @@ def deletar_tabela_especies():
 
 # deletar_tabela_pokémons()
 #   Deleta a tabela de pokémons
-#       isso pode ser feito sem a deleção da tabela de pessoas
-#   Entrada: nenhuma
-#   Saída: nenhuma  
 def deletar_tabela_pokemons():
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    # Executa o comando DROP TABLE para a tabela pokemons, caso exista
+    # Executa o comando DROP TABLE para a tabela pokémons, caso exista
     cursor.execute ("""DROP TABLE IF EXISTS pokemons;""")
-    # Finaliza e comita a deleção da tabela
     connection.commit()
 
     # Encerra a conexão com o banco de dados
@@ -230,10 +213,9 @@ def deletar_tabela_pokemons():
     connection.close()
 
 # reiniciar_tabela(nome_tabela)
-#   Reinicia ambas as tabelas caso o argumento seja 'pessoas'
-#            e só a tabela pokémon caso o argumento seja 'pokemons'
-#   Entrada: uma string 'nome_tabela' que deve ser 'pessoas' ou 'pokemons'
-#   Saída: nenhuma   
+#   reinicia ambas as tabelas caso o argumento seja 'pessoas'
+#            e só a tabela pokémon caso o argumento seja 'pokémons'
+#   Entrada: uma string 'nome_tabela' que deve ser 'pessoas' ou 'pokémons'
 def reiniciar_tabela(nome_tabela):
 
     if (nome_tabela == 'pessoas'):
@@ -246,7 +228,7 @@ def reiniciar_tabela(nome_tabela):
         criar_tabela_pokemons()
     
     elif (nome_tabela == 'pokemons'):
-        # Caso o argumento seja 'pokemons,' deleta somente a tabela pokemons
+        # Caso o argumento seja 'pokémons,' deleta somente a tabela pokémons
         #   e então cria a tabela vazia novamente
         deletar_tabela_pokemons()
         criar_tabela_pokemons()
@@ -255,11 +237,11 @@ def reiniciar_tabela(nome_tabela):
         # Caso o usuário insira um argumento inválido, uma mensagem de erro é exibida
         return 'Tabela com nome ' + str(nome_tabela) + ' não encontrada, favor fornecer o nome de uma tabela existente'
     
-
+# incluir_especie(entrada)
+#   adiciona uma nova espécie na tabela de espécies
+#   Entrada: uma string 'espécie,tipo_primario,tipo_secundario;'
+#               a string 'tipo_secundario' pode ser vazia
 def incluir_especie(entrada):
-    
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
@@ -267,25 +249,22 @@ def incluir_especie(entrada):
     especie, tipo_primario, tipo_secundario = (entrada.replace(';', '')).split(',')
     valores = "'" + especie + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'"
 
+    # Faz a correção de nomes de espécies com caracteres especiais
     especie = corrige_nome(especie)
-    
+
+    # Insere a espécie na tabela    
     cursor.execute ("""INSERT INTO especies (especie, tipo_primario, tipo_secundario) 
                     VALUES ("""+ valores + ");")
-    # Completa e commita o processo de inserção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     
-# incluir_pessoa(informacoes)
-#   Insere uma pessoa nova no banco de dados
+# incluir_pessoa(dados)
+#   adiciona uma pessoa nova no banco de dados
 #   Entrada: uma string no formato "nome,id_treinador,data_nascimento"
-#   Saída: nenhuma
 def incluir_pessoa(entrada):
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
@@ -293,24 +272,19 @@ def incluir_pessoa(entrada):
     nome, id_treinador, data_nascimento = (entrada.replace(';', '')).split(',')
     valores = "'" + nome + "'" + ", " + "'" + str (id_treinador) + "'" + ", " + "'" + data_nascimento + "'"
 
-    # Executa o comando INSERT em postgresql para inserir a instância na tabela
+    # Insere o treinador na tabela
     cursor.execute ("""INSERT INTO pessoas (nome_treinador, id_treinador, data_nascimento)
                      VALUES ("""+ valores + ");")
-    # Completa e commita o processo de inserção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
-# incluir_pokemon(informacoes)
-#   Insere um pokemon novo no banco de dados
-#   Entrada: uma string no formato "nome,custo_mensal,especie,id_treinador_dono"
-#   Saída: nenhuma
+# incluir_pokemon(entrada)
+#   adiciona um pokémon novo no banco de dados
+#   Entrada: uma string no formato "nome,custo_mensal,especie,id_treinador"
 def incluir_pokemon(entrada):
-    
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
@@ -318,44 +292,50 @@ def incluir_pokemon(entrada):
     nome, custo_mensal, especie, id_treinador = (entrada.replace(';', '')).split(',')
     valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + especie + "'" + ", " + "'" + str (id_treinador) + "'"
 
+    # Faz a correção de nomes de espécies com caracteres especiais
     especie = corrige_nome(especie)
     
-    # Executa o comando INSERT em postgresql para inserir a instância na tabela
+    # Insere o pokémon na tabela
     cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, id_treinador) 
                     VALUES ("""+ valores + ");")
-    # Completa e commita o processo de inserção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     
+# atualizar_pessoa(id_treinador, nome, data_nascimento)
+#   atualiza o treinador de id 'id_treinador' com um ou mais dados alterados
+#   Entrada: strings 'id_treinador', 'nome' e 'data_nascimento'
+#               os dados 'nome' e 'data_nascimento' que não serão alterados terão o valor antigo
 def atualizar_pessoa(id_treinador, nome, data_nascimento):
-
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    # Determina se o usuário quer fazer a alteração do nome, data de nascimento ou ambos
-    #   então, executa o comando UPDATE pessoas SET [] para alterar as colunas em questão
-    #   na linha onde 'id_treinador' é igual ao argumento passado
+    # Executa o comando UPDATE pessoas SET [] para alterar a data de nascimento e o nome
+    #   do treinador cujo 'id_treinador' é igual ao argumento passado
     cursor.execute (""" UPDATE pessoas
                         SET nome_treinador = """ + "'" + nome + "'" + ", data_nascimento = " + "'" + data_nascimento + "'" +
                         " WHERE id_treinador = " + "'" + str(id_treinador) + "'" + ";")
-    # Completa e commita o processo de alteração da tabela
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
+# atualizar_pokemon(nome_pokemon, custo_mensal, especie, id_treinador)
+#   atualiza o pokémon de nome 'nome_pokemon' com um ou mais dados alterados
+#   Entrada: strings 'nome_pokemon', 'custo_mensal', 'especie', e 'id_treinador'
+#               os dados 'custo_mensal', 'especie' e 'id_treinador' que não serão alterados terão o valor antigo
 def atualizar_pokemon(nome_pokemon, custo_mensal, especie, id_treinador):
-    especie = corrige_nome(especie)
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Faz a correção de nomes de espécies com caracteres especiais
+    especie = corrige_nome(especie)
+
+    # Executa o comando UPDATE pokemons SET [] para alterar os dados
+    #   do pokémon cujo 'nome_pokemon' é igual ao argumento passado
     cursor.execute (""" UPDATE pokemons
                         SET custo_mensal = """ + "'" + str(custo_mensal) + "'" + 
                         ", especie = " + "'" + especie + "'" +
@@ -363,30 +343,40 @@ def atualizar_pokemon(nome_pokemon, custo_mensal, especie, id_treinador):
                         " WHERE nome_pokemon = " + "'" + nome_pokemon + "'" + ";")
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
+# selecionar_pessoa(id_treinador)
+#   seleciona o treinador com ID igual ao argumento
+#   Entrada: string 'id_treinador'
+#   Saída: lista de treinadores com um elemento
 def selecionar_pessoa(id_treinador):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona os treinadores cujo 'id_treinador' é igual ao argumento passado
+    #   por ser uma chave primária, sempre retorna um único treinador
     cursor.execute ("""SELECT * FROM pessoas
                        WHERE id_treinador = """ + "'" + str (id_treinador) + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# selecionar_pokemon(nome)
+#   seleciona o pokémon com nome igual ao argumento
+#   Entrada: string 'nome'
+#   Saída: lista de pokémons com um elemento
 def selecionar_pokemon(nome):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona os pokémons cujo 'nome_pokemon' é igual ao argumento passado
+    #   por ser uma chave primária, sempre retorna um único pokémon
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -400,16 +390,20 @@ def selecionar_pokemon(nome):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# selecionar_pessoas_nome(nome)
+#   seleciona os treinadores com nome igual ao argumento
+#   Entrada: string 'nome'
+#   Saída: lista de treinadores
 def selecionar_pessoas_nome(nome):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona os treinadores cujo 'nome_treinador' é igual ao argumento passado
     cursor.execute ("""SELECT nome_treinador,
                         id_treinador,
                         data_nascimento
@@ -418,16 +412,20 @@ def selecionar_pessoas_nome(nome):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# selecionar_pessoas_data_nasc(data_nascimento)
+#   seleciona os treinadores com data de nascimento igual ao argumento
+#   Entrada: string 'data_nascimento'
+#   Saída: lista de treinadores
 def selecionar_pessoas_data_nasc(data_nascimento):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona os treinadores cuja 'data_nascimento' é igual ao argumento passado
     cursor.execute ("""SELECT nome_treinador,
                         id_treinador,
                         data_nascimento
@@ -436,31 +434,37 @@ def selecionar_pessoas_data_nasc(data_nascimento):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
-
+# retorna_tabela_pessoas()
+#   retorna a tabela completa de treinadores
+#   Saída: lista de treinadores
 def retorna_tabela_pessoas():
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todos os treinadores
     cursor.execute ("SELECT * FROM pessoas")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# retorna_tabela_pokemons()
+#   retorna a tabela completa de pokémons
+#   Saída: lista de pokémons
 def retorna_tabela_pokemons():
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todos os pokémons
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -473,30 +477,37 @@ def retorna_tabela_pokemons():
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# retorna_tabela_especies()
+#   retorna a tabela completa de espécies
+#   Saída: lista de espécies
 def retorna_tabela_especies():
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todas as espécies
     cursor.execute ("SELECT * FROM especies")
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# retorna_pokemons_de_pessoa_id_treinador(id_treinador)
+#   retorna todos os pokémons que o treinador identificado pelo argumento tem
+#   Entrada: string 'id_treinador'
+#   Saída: lista de pokémons
 def retorna_pokemons_de_pessoa_id_treinador(id_treinador):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todos os pokémons que tem como chave estrangeira o argumento
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -510,16 +521,20 @@ def retorna_pokemons_de_pessoa_id_treinador(id_treinador):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# retorna_pokemons_do_tipo(tipo)
+#   retorna todos os pokémons com um dos tipos igual ao argumento
+#   Entrada: string 'tipo'
+#   Saída: lista de pokémons
 def retorna_pokemons_do_tipo(tipo):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todos os pokémons cujo 'tipo_primario' ou 'tipo_secundário' é igual ao argumento
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -533,14 +548,20 @@ def retorna_pokemons_do_tipo(tipo):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# retorna_pokemons_do_custo_mensal(custo_mensal)
+#   retorna todos os pokemons com custo mensal igual ao argumento
+#   Entrada: string 'custo_mensal'
+#   Saída: lista de pokémons
 def retorna_pokemons_do_custo_mensal(custo_mensal):
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todos os pokémons com 'custo_mensal' igual ao argumento
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -551,20 +572,26 @@ def retorna_pokemons_do_custo_mensal(custo_mensal):
                         id_treinador 
                         FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                         WHERE custo_mensal = """ + "'" + custo_mensal + "';")
-    
     resultado_querry = cursor.fetchall()
     connection.commit()
-    
+
+    # Encerra a conexão com o banco de dados    
     cursor.close()
     connection.close()
     return resultado_querry
 
+# retorna_pokemons_da_especie(especie)
+#   retorna todos os pokémons com espécie igual ao argumento
+#   Entrada: string 'especie'
+#   Saída: lista de pokémons
 def retorna_pokemons_da_especie(especie):
-    especie = corrige_nome(especie)
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Faz a correção de nomes de espécies com caracteres especiais
+    especie = corrige_nome(especie)
+
+    # Seleciona todos os pokémons cuja 'especie' é igual ao argumento
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -578,25 +605,23 @@ def retorna_pokemons_da_especie(especie):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
+    # Encerra a conexão com o banco de dados    
     cursor.close()
     connection.close()
     return resultado_querry
 
 # excluir_pessoa(id_treinador)
-#   Exclui a pessoa com a chave primaria 'id_treinador'
-#   Entrada: uma string que contém o número de id_treinador da pessoa a ser excluida
-#   Saída: nenhuma
+#   exclui o treinador com a chave primaria 'id_treinador' e todos os pokémons vinculados a esse treinador
+#   Entrada: string 'id_treinador'
 def excluir_pessoa(id_treinador):
-    
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'id_treinador' igual ao argumento
+    # Deleta todos os pokémons cuja chave estrangeira é igual ao argumento
+    #   então, deleta todos os treinadores cujo 'id_treinador' é igual ao argumento
+    #   por ser uma chave primária, só exclui um treinador
     cursor.execute ("DELETE FROM pokemons WHERE id_treinador = " + "'" + str (id_treinador) + "'" + ";")
     cursor.execute ("DELETE FROM pessoas WHERE id_treinador = " + "'" + str (id_treinador) + "'" + ";")
-    # Completa e commita o processo de remoção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
@@ -604,79 +629,31 @@ def excluir_pessoa(id_treinador):
     connection.close()
 
 # excluir_pokemon(nome_pokemon)
-#   Exclui o pokémon com a chave primaria 'nome_pokemon'
-#   Entrada: uma string que contém o nome do pokémon a ser excluido
-#   Saída: nenhuma
+#   exclui o pokémon com a chave primaria 'nome_pokemon'
+#   Entrada: string 'nome_pokemon'
 def excluir_pokemon(nome_pokemon):
-    
-    # Acessa o banco de dados
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
-    # Executa o comando DELETE em postgresql para remover a instância na tabela com a chave primária 'nome_pokemon' igual ao argumento
+    # Deleta todos os pokémons cujo 'nome_pokemon' é igual ao argumento
+    #   por ser uma chave primária, só exclui um pokemon
     cursor.execute ("DELETE FROM pokemons WHERE nome_pokemon = " + "'" + nome_pokemon + "'" + ";")
-    # Completa e commita o processo de remoção
     connection.commit()
 
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
 
-def excluir_especie(especie):
-    especie = corrige_nome(especie)
-
-    # Acessa o banco de dados
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("DELETE FROM especies WHERE especie = " + "'" + especie + "'" + ";")
-    # Completa e commita o processo de inserção
-    connection.commit()
-
-    # Encerra a conexão com o banco de dados
-    cursor.close()
-    connection.close()
-
-# QUERRIES AVANÇADAS
-
-def retorna_tipos_especie(especie):
-    especie = corrige_nome(especie)
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("""SELECT tipo primario, tipo secundario FROM especies
-                       WHERE especie = """ + "'" + especie + "'" + ";")
-    resultado_querry = cursor.fetchall()
-    connection.commit()
-
-    cursor.close()
-    connection.close()
-    return resultado_querry
-
-def retorna_propietarios_de_especie(especie):
-    especie = corrige_nome(especie)
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("""SELECT nome_treinador, id_treinador FROM pessoas NATURAL JOIN pokemons
-                       WHERE especie = """ + "'" + especie + "'" + ";")
-    resultado_querry = cursor.fetchall()
-    connection.commit()
-
-    cursor.close()
-    connection.close()
-    return resultado_querry
-
+# retorna_pokemons_de_pessoa_nome_treinador(nome_treinador)
+#   retorna todos os pokémons de treinadores com o nome 'nome_treinador'
+#       por não ser uma chave primária, pode retornar pokémons de mais de um treinador
+#   Entrada: string 'nome_treinador'
+#   Saída: lista de pokémons
 def retorna_pokemons_de_pessoa_nome_treinador(nome_treinador):
-
-
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
 
+    # Seleciona todos os pokémons de todos os treinadores cujo nome é igual ao argumento
     cursor.execute ("""SELECT id_pokemon,
                         nome_pokemon,
                         especie,
@@ -690,75 +667,36 @@ def retorna_pokemons_de_pessoa_nome_treinador(nome_treinador):
     resultado_querry = cursor.fetchall()
     connection.commit()
 
-    cursor.close()
-    connection.close()
-    return resultado_querry
-
-def retorna_treinadores_com_custo_maior(custo_mensal):
-
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("""WITH custo_por_treinador AS (
-	                SELECT SUM (custo_mensal) AS custo_total, id_treinador 
-                    FROM pokemons
-                    GROUP BY id_treinador)
-                    SELECT nome_treinador, id_treinador, data_nascimento 
-                    FROM pessoas NATURAL JOIN custo_por_treinador
-                    WHERE pessoas.id_treinador = custo_por_treinador.id_treinador 
-                    AND custo_total > """ + str(custo_mensal) + ";")
-    resultado_querry = cursor.fetchall()
-    connection.commit()
-
-    cursor.close()
-    connection.close()
-    return resultado_querry
-
-def retorna_treinador(id_treinador):
-
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("""SELECT nome_treinador, id_treinador, data_nascimento FROM pessoas
-                       WHERE id_treinador = """ + "'" + str(id_treinador) + "'" + ";")
-    resultado_querry = cursor.fetchall()
-    connection.commit()
-
-    cursor.close()
-    connection.close()
-    return resultado_querry
-
-def retorna_especie(especie):
-    especie = corrige_nome(especie)
-    # Acessa o banco de dados
-
-    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
-    cursor = connection.cursor()
-
-    cursor.execute ("SELECT * FROM especies WHERE especie = " + "'" + especie + "';")
-    resultado_querry = cursor.fetchall()
-    # Completa e commita o processo de inserção
-    connection.commit()
-
     # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry
 
+# corrige_nome(especie)
+#   corrige e sanitiza nomes de espécies com caracteres especiais, para a forma que o banco de dados usa eles
+#   Entrada: string 'especie'
+#   Saída: string
 def corrige_nome(especie):
+    # Apóstrofos causam erros no psycopg2, então o banco de dados remove ele
     if especie == "Farfetch'd":
         return "Farfetchd"
+    # Usuários podem escrever Mr Mime sem o ponto, logo, colocamos ele de volta
     if especie == "Mr Mime":
         return "Mr. Mime"
+    
+    # A maior parte dos usuários não terá as teclas ♂ e ♀, logo, damos uma alternativa de como escrever
     if especie == "Nidoran(m)" or especie == "Nidoran (m)":
         return "Nidoran♂"
     if especie == "Nidoran(f)" or especie == "Nidoran (f)":
         return "Nidoran♀"
+
+    # Nenhum outro nome de pokémon causa erros
     else:
         return especie
 
+# pokedex()
+#   insere no banco de dados todas as 151 espécies da primeira geração e seus respectivos tipos
+#       usamos a tipagem mais recente dos pokémons, ao invés da tipagem original deles na primeira geração
 def pokedex():
     incluir_especie('Bulbasaur,Grama,Venenoso')
     incluir_especie('Ivysaur,Grama,Venenoso')
@@ -912,21 +850,25 @@ def pokedex():
     incluir_especie('Mewtwo,Psíquico,')
     incluir_especie('Mew,Psíquico,')
 
+# função de teste
+# popular_bd()
+#   preenche o banco de dados com alguns exemplos para facilitar a visualização e testes
 def popular_bd():
-    pokedex()
-    
-    incluir_pessoa ('Rafa,555551278,21/03/1999;')
+
     incluir_pessoa ('Lucas,665551278,16/06/1998;')
-    incluir_pessoa ('Carlinhos,555555555,23/05/1994;')
+
     incluir_pokemon('Mayu,150.00,Charizard,665551278;')
     incluir_pokemon('Viny,200.00,Dragonite,665551278;')
+    
+
+    incluir_pessoa ('Carlinhos,555555555,23/05/1994;')
+
     incluir_pokemon('Sparky,80.00,Jolteon,555555555;')
+    
+
+    incluir_pessoa ('Rafa,555551278,21/03/1999;')
+
     incluir_pokemon('Charla,150.00,Charizard,555551278;')
     incluir_pokemon('Aurora,65.50,Butterfree,555551278;')
-
     incluir_pokemon('Ghastly,100.50,Gastly,555551278;')
     incluir_pokemon('RafaZapdos,600,Zapdos,555551278;')
-    
-    
-    
-    return

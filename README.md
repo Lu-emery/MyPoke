@@ -8,8 +8,10 @@ Parte do trabalho de um Treinador Pokémon, seja ele um competidor casual em um 
 
 A construção e disponibilização de uma base de dados de fácil acesso, portanto, facilitaria o trabalho dos organizadores dos grupos e/ou eventos, que devem registrar todos os pokémons e regras específicas do evento; dos treinadores, que devem se inscrever e inscrever seus pokémons no evento; e dos analistas, que fazem a análise estatística de prevalência de tipos de pokémons e de pokémons específicos.
 
+O sistema MyPoké consta com uma base de dados de todos os 151 pokémons da Geração I, com seus tipos atualizados para as suas tipagens recentes. Também consta com um sistema de tratamento de erros e de autenticação, que permite que treinadores insiram os próprios pokémons, pela página de perfil associada, sem comprometer a integridade das informações de outros treinadores ou do banco de dados.
 
-![](example.png)
+
+![](example1.png)
 
 ## Instalação
 
@@ -19,27 +21,32 @@ Dependências
 
 [Postgresql v14](https://www.postgresql.org/download/)
 
+Foram usadas, como configurações padrão do postgres, o banco de dados 'postgres' com a senha 'admin'.
+
+Isso é usado somente para acessar o sistema para criar o banco 'mypoke'.
 
 
-(contidos no venv)
 
-psycopg2, flask, flask-login
+psycopg2, flask, flask-login, matplotlib, numpy
 ```
 pip install psycopg2
 pip install flask
 pip install flask-login
+pip install matplotlib
+pip install numpy
 ```
 
 OS X & Linux:
 
 ```sh
 cd src
-. venv/bin/activate
 python3 main.py
 
 acessar o site a partir de http://127.0.0.1:5000
 criar uma conta (caso a senha seja 3333 o usuário é administrador e tem acesso a todas as funcionalidades)
 ```
+
+
 
 ## Exemplo de uso
 
