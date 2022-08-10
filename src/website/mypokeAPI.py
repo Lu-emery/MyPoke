@@ -267,6 +267,8 @@ def incluir_especie(entrada):
     especie, tipo_primario, tipo_secundario = (entrada.replace(';', '')).split(',')
     valores = "'" + especie + "'" + ", " + "'" + tipo_primario + "'" + ", " + "'" + tipo_secundario + "'"
 
+    especie = corrige_nome(especie)
+    
     cursor.execute ("""INSERT INTO especies (especie, tipo_primario, tipo_secundario) 
                     VALUES ("""+ valores + ");")
     # Completa e commita o processo de inserção
@@ -316,6 +318,8 @@ def incluir_pokemon(entrada):
     nome, custo_mensal, especie, id_treinador = (entrada.replace(';', '')).split(',')
     valores = "'" + nome + "'" + ", " + "'" + str (custo_mensal) + "'" + ", " + "'" + especie + "'" + ", " + "'" + str (id_treinador) + "'"
 
+    especie = corrige_nome(especie)
+    
     # Executa o comando INSERT em postgresql para inserir a instância na tabela
     cursor.execute ("""INSERT INTO pokemons (nome_pokemon, custo_mensal, especie, id_treinador) 
                     VALUES ("""+ valores + ");")
@@ -347,7 +351,7 @@ def atualizar_pessoa(id_treinador, nome, data_nascimento):
     connection.close()
 
 def atualizar_pokemon(nome_pokemon, custo_mensal, especie, id_treinador):
-
+    especie = corrige_nome(especie)
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
@@ -389,8 +393,9 @@ def selecionar_pokemon(nome):
                         custo_mensal,
                         tipo_primario,
                         tipo_secundario,
+                        nome_treinador,
                         id_treinador 
-                        FROM pokemons NATURAL JOIN especies
+                        FROM pokemons NATURAL JOIN especies NATURAL JOIN pessoas
                         WHERE nome_pokemon = """ + "'" + nome + "';")
     resultado_querry = cursor.fetchall()
     connection.commit()
@@ -555,7 +560,7 @@ def retorna_pokemons_do_custo_mensal(custo_mensal):
     return resultado_querry
 
 def retorna_pokemons_da_especie(especie):
-
+    especie = corrige_nome(especie)
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
@@ -619,6 +624,7 @@ def excluir_pokemon(nome_pokemon):
     connection.close()
 
 def excluir_especie(especie):
+    especie = corrige_nome(especie)
 
     # Acessa o banco de dados
 
@@ -636,6 +642,7 @@ def excluir_especie(especie):
 # QUERRIES AVANÇADAS
 
 def retorna_tipos_especie(especie):
+    especie = corrige_nome(especie)
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
@@ -650,6 +657,7 @@ def retorna_tipos_especie(especie):
     return resultado_querry
 
 def retorna_propietarios_de_especie(especie):
+    especie = corrige_nome(especie)
 
     connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
     cursor = connection.cursor()
@@ -706,6 +714,50 @@ def retorna_treinadores_com_custo_maior(custo_mensal):
     cursor.close()
     connection.close()
     return resultado_querry
+
+def retorna_treinador(id_treinador):
+
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("""SELECT nome_treinador, id_treinador, data_nascimento FROM pessoas
+                       WHERE id_treinador = """ + "'" + str(id_treinador) + "'" + ";")
+    resultado_querry = cursor.fetchall()
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_especie(especie):
+    especie = corrige_nome(especie)
+    # Acessa o banco de dados
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM especies WHERE especie = " + "'" + especie + "';")
+    resultado_querry = cursor.fetchall()
+    # Completa e commita o processo de inserção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def corrige_nome(especie):
+    if especie == "Farfetch'd":
+        return "Farfetchd"
+    if especie == "Mr Mime":
+        return "Mr. Mime"
+    if especie == "Nidoran(m)" or especie == "Nidoran (m)":
+        return "Nidoran♂"
+    if especie == "Nidoran(f)" or especie == "Nidoran (f)":
+        return "Nidoran♀"
+    else:
+        return especie
 
 def pokedex():
     incluir_especie('Bulbasaur,Grama,Venenoso')
@@ -871,15 +923,10 @@ def popular_bd():
     incluir_pokemon('Sparky,80.00,Jolteon,555555555;')
     incluir_pokemon('Charla,150.00,Charizard,555551278;')
     incluir_pokemon('Aurora,65.50,Butterfree,555551278;')
-    incluir_pokemon('Ghastly,100.50,Ghastly,555551278;')
-    incluir_pokemon('Rafa Zapdos,600,Zapdos,555551278;')
+
+    incluir_pokemon('Ghastly,100.50,Gastly,555551278;')
+    incluir_pokemon('RafaZapdos,600,Zapdos,555551278;')
     
     
     
     return
-
-
-
-
-
-## Hehe nice
