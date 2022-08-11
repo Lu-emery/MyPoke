@@ -96,16 +96,22 @@ def inicializar_mypoke():
     
     if ('mypoke',) in list_db:
         # comando de teste
-        # deletar_base_de_dados()
+        deletar_base_de_dados()
+        # Caso não exista, cria o banco de dados no postgres e popula a tabela espécies
+        criar_base_de_dados()
+        pokedex()
+        # comando de teste
+        # Popula o banco de dados com os dados de exemplo
+        popular_bd()
         pass
     else:
         # Caso não exista, cria o banco de dados no postgres e popula a tabela espécies
         criar_base_de_dados()
         pokedex()
+        # comando de teste
+        # Popula o banco de dados com os dados de exemplo
+        popular_bd()
     
-    # comando de teste
-    # Popula o banco de dados com os dados de exemplo
-    popular_bd()
     
     # Encerra a conexão com o banco de dados
     cursor.close()
@@ -606,6 +612,23 @@ def retorna_pokemons_da_especie(especie):
     connection.commit()
 
     # Encerra a conexão com o banco de dados    
+    cursor.close()
+    connection.close()
+    return resultado_querry
+
+def retorna_especie(especie):
+    especie = corrige_nome(especie)
+    # Acessa o banco de dados
+
+    connection = psycopg2.connect(database = 'mypoke', user=USER, password=PASSWORD, host=HOST, port= PORT)
+    cursor = connection.cursor()
+
+    cursor.execute ("SELECT * FROM especies WHERE especie = " + "'" + especie + "';")
+    resultado_querry = cursor.fetchall()
+    # Completa e commita o processo de inserção
+    connection.commit()
+
+    # Encerra a conexão com o banco de dados
     cursor.close()
     connection.close()
     return resultado_querry

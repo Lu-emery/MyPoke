@@ -51,7 +51,7 @@ def pokemon_add():
                 # Caso a espécie não esteja no sistema
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
-            if not retorna_treinador(trn_id):
+            if not selecionar_pessoa(trn_id):
                 # Caso o ID não seja referente a nenhum treinador
                 errored = True
                 flash("Favor inserir um ID de treinador válido", category="ERROR")
@@ -110,7 +110,7 @@ def pokemon_srch():
                 # Caso queira alterar uma espécie para uma que não existe
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
-            if trn_id and not retorna_treinador(trn_id):
+            if trn_id and not selecionar_pessoa(trn_id):
                 # Caso queira transferir um pokémon para um ID referente a nenhum treinador
                 errored = True
                 flash("Favor inserir um ID de treinador válido", category="ERROR")
@@ -213,7 +213,7 @@ def pokemon_upd():
                 # Caso queira alterar uma espécie para uma que não existe
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
-            if trn_id and not retorna_treinador(trn_id):
+            if trn_id and not selecionar_pessoa(trn_id):
                 # Caso queira transferir um pokémon para um ID referente a nenhum treinador
                 errored = True
                 flash("Favor inserir um ID de treinador válido", category="ERROR")
@@ -334,7 +334,7 @@ def trn_id(trn_id):
                 # Caso a espécie não esteja no sistema
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
-            if not retorna_treinador(trn_id):
+            if not selecionar_pessoa(trn_id):
                 # Caso o ID não seja referente a nenhum treinador
                 errored = True
                 flash("Favor inserir um ID de treinador válido", category="ERROR")
@@ -366,7 +366,7 @@ def trn_id(trn_id):
                 # Caso queira alterar uma espécie para uma que não existe
                 errored = True
                 flash("A espécie de nome " + species + " não foi encontrada, favor inserir o nome de uma espécie válida", category="ERROR")
-            if trn_id and not retorna_treinador(trn_id):
+            if trn_id and not selecionar_pessoa(trn_id):
                 # Caso queira transferir um pokémon para um ID referente a nenhum treinador
                 errored = True
                 flash("Favor inserir um ID de treinador válido", category="ERROR")
@@ -410,7 +410,7 @@ def trn_id(trn_id):
     # Caso não tenhamos buscado nada, o banco de dados é o padrão 
     if not db:
         db = retorna_pokemons_de_pessoa_id_treinador (trn_id)
-    treinador = retorna_treinador (trn_id)
+    treinador = selecionar_pessoa (trn_id)
     
     # Criamos os gráficos de espécie e tipo baseado no banco de dados definido    
     cria_graficos(db)
@@ -471,6 +471,7 @@ def trainer_srch():
 
 @views.route('/trn/del', methods=['GET', 'POST'])
 def trainer_del():
+    db = None
     if request.method == 'POST':
         if request.form.get('query-category') == None:
             # Caso haja um nome a ser removido, é um pedido de remoção
